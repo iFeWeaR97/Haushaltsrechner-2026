@@ -1,5 +1,7 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -10,15 +12,17 @@ namespace WPF_Test
     public partial class MainWindow : Window
     {
         public PlotModel PlotModel { get; set; }
-        private LineSeries series;
 
-        double Ausgaben = 20.20;
+        private LineSeries series;
+        private int timeIndex = 0;
+
+        private List<double> Ausgaben = new();
 
         public MainWindow()
         {
             InitializeComponent();
             BuildPlot();
-            DataContext = this;   // Binding aktivieren
+            DataContext = this;
         }
 
         private void Button_choose_date(object sender, RoutedEventArgs e)
@@ -27,13 +31,12 @@ namespace WPF_Test
 
             if (double.TryParse(userInput, NumberStyles.Any, new CultureInfo("de-DE"), out double result))
             {
-                Ausgaben = result;
+                // Wert speichern
+                Ausgaben.Add(result);
 
-               
-                if (series.Points.Count == 0)
-                    series.Points.Add(new DataPoint(0, Ausgaben));
-                else
-                    series.Points[0] = new DataPoint(0, Ausgaben);
+                // Punkt an Plot anhängen
+                series.Points.Add(new DataPoint(timeIndex, result));
+                timeIndex++;
 
                 PlotModel.InvalidatePlot(true);
             }
@@ -43,45 +46,42 @@ namespace WPF_Test
             }
         }
 
-
         private void Button_open_diagramm(object sender, RoutedEventArgs e)
         {
             bool show = Show_Input.Visibility != Visibility.Visible;
 
             Show_Input.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
             MyPlot.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
-
         }
 
         private void BuildPlot()
         {
-            DateTime dt = DateTime.Now;
-            string outputDate = dt.ToString("dd.MM.yyyy");
+            PlotModel = new PlotModel
+            {
+                Title = "Übersicht der Ausgaben"
+            };
 
-            PlotModel = new PlotModel { Title = "Übersicht der Ausgaben" };
+            PlotModel.Axes.Add(new LinearAxis
+            {
+                Position = AxisPosition.Bottom,
+                Title = "Zeit"
+            });
 
-            PlotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Title = outputDate });
-            PlotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Title = "Ausgaben in €" });
+            PlotModel.Axes.Add(new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                Title = "Ausgaben in €"
+            });
 
-            
-            series = new LineSeries { 
+            series = new LineSeries
+            {
                 Title = "Ausgabenhöhe",
                 Color = OxyColors.Red,
                 StrokeThickness = 2
             };
 
-            // Startpunkt hinzufügen
-            series.Points.Add(new DataPoint(0, 0));
-            series.Points.Add(new DataPoint(Ausgaben, 0));
-           
-           
-
             PlotModel.Series.Add(series);
             MyPlot.Model = PlotModel;
-
         }
-
-
-
     }
 }
