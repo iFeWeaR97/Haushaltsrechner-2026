@@ -1,0 +1,108 @@
+﻿<Window x:Class="WPF_Test.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:oxy="http://oxyplot.org/wpf"
+
+        Title="Haushaltsplaner" Height="650" Width="800">
+
+    <Window.Background>
+        <ImageBrush ImageSource="Pictures/background.jpg"
+                    Stretch="UniformToFill"/>
+    </Window.Background>
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="LightGray"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderThickness" Value="4"/>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style TargetType="oxy:PlotView">
+            <Setter Property="Background" Value="Transparent"></Setter>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+    </Window.Resources>
+
+    <DockPanel>
+        <!-- Menü -->
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_Datei">
+                <MenuItem Header="_Öffnen"/>
+                <MenuItem Header="_Speichern"/>
+                <Separator/>
+                <MenuItem Header="_Beenden"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- Titel -->
+        <Label Content="Haushaltsplaner und Rechner"
+               DockPanel.Dock="Top"
+               HorizontalContentAlignment="Center"
+               FontSize="26"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto">
+            <!-- Hauptbereich -->
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+
+                </Grid.RowDefinitions>
+
+                <!-- Buttons -->
+                <StackPanel Grid.Row="0"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+                    <Button Margin="5"
+                            Padding="10"
+                            Content="Haushaltsplaner"
+                            FontSize="16"/>
+                    <Button Margin="5"
+                            Padding="10"
+                            Content="Rechner"
+                            FontSize="16"/>
+                    <Button Margin="5"
+                            Padding="10"
+                            Content="Diagramm"
+                            FontSize="16"
+                            Click="Button_open_diagramm"
+                            />
+                </StackPanel>
+
+                <!-- Eingabe für Haushaltsplaner und Rechner -->
+
+                <StackPanel Grid.Row="1"
+                            Grid.Column="2"
+                            Orientation="Vertical"
+                            Visibility="Collapsed"
+                            x:Name="Show_Input">
+                    <Label Content="Ausgaben:" FontSize="23"/>
+                    <StackPanel Orientation="Vertical"
+                                Width="Auto"
+                                Height="Auto">
+                        <TextBox ToolTip="Bitte Betrag eingeben"
+                                 x:Name="userInputAusgaben"
+                                 BorderBrush="Black"
+                                 BorderThickness="2"/>
+                        <Button Content="Bestätigen"
+                                Click="Button_choose_date"
+                                BorderBrush="Black"
+                                BorderThickness="2"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <oxy:PlotView Grid.Row="3"
+                              x:Name="MyPlot"
+                              Model="{Binding PlotModel}"
+                              Margin="10"
+                              Visibility="Collapsed"/>
+
+            </Grid>
+        </ScrollViewer>
+    </DockPanel>
+</Window>
