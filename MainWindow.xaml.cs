@@ -97,6 +97,7 @@ namespace WPF_Test
         {
             PlotModel.Series.Remove(series);
             PlotModel.InvalidatePlot(true);
+            userInputAusgaben.Clear();
             BuildPlot();
         }
 
