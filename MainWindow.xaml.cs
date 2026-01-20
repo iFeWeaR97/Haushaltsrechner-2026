@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Windows;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -13,8 +15,11 @@ namespace WPF_Test
     {
         public PlotModel PlotModel { get; set; }
 
+
         private LineSeries series;
         private int timeIndex = 0;
+
+        public ObservableCollection<Expense> Expenses { get; set; } = new();
 
         private List<double> Ausgaben = new();
 
@@ -48,6 +53,8 @@ namespace WPF_Test
 
         private void Button_open_diagramm(object sender, RoutedEventArgs e)
         {
+            Show_expenses.Visibility = Visibility.Collapsed;
+           
             bool show = Show_Input.Visibility != Visibility.Visible;
 
             Show_Input.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
@@ -56,6 +63,7 @@ namespace WPF_Test
 
         private void BuildPlot()
         {
+
             PlotModel = new PlotModel
             {
                 Title = "Übersicht der Ausgaben"
@@ -83,5 +91,50 @@ namespace WPF_Test
             PlotModel.Series.Add(series);
             MyPlot.Model = PlotModel;
         }
+
+
+        private void Button_delete_diagramm(object sender, RoutedEventArgs e)
+        {
+            PlotModel.Series.Remove(series);
+            PlotModel.InvalidatePlot(true);
+            BuildPlot();
+        }
+
+
+
+
+        private void Button_open_finance(object sender, RoutedEventArgs e)
+        {
+
+            Show_Input.Visibility = Visibility.Collapsed;
+            MyPlot.Visibility = Visibility.Collapsed;
+
+            bool show_finance = Show_expenses.Visibility != Visibility.Visible;
+
+            Show_expenses.Visibility = show_finance ? Visibility.Visible : Visibility.Collapsed;
+
+        }
+
+        public class Expense
+        {
+            public string Name { get; set; }
+            public string Betrag { get; set; }
+
+        }
+
+
+        private void Button_add_expenses(object sender, RoutedEventArgs e)
+        {
+
+            Expenses.Add(new Expense
+            {
+                Name = "Ausgaben",
+                Betrag = "0€"
+
+            });
+
+        }
+
+
     }
 }

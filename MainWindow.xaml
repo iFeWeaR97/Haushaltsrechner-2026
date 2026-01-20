@@ -7,8 +7,11 @@
 
     <Window.Background>
         <ImageBrush ImageSource="Pictures/background.jpg"
-                    Stretch="UniformToFill"/>
+                    Stretch="UniformToFill"
+                    Opacity="0.7"/>
+
     </Window.Background>
+
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Background" Value="LightGray"/>
@@ -38,7 +41,7 @@
         </Menu>
 
         <!-- Titel -->
-        <Label Content="Haushaltsplaner und Rechner"
+        <Label Content="Haushaltsplaner 2026"
                DockPanel.Dock="Top"
                HorizontalContentAlignment="Center"
                FontSize="26"/>
@@ -61,7 +64,8 @@
                     <Button Margin="5"
                             Padding="10"
                             Content="Haushaltsplaner"
-                            FontSize="16"/>
+                            FontSize="16"
+                            Click="Button_open_finance"/>
                     <Button Margin="5"
                             Padding="10"
                             Content="Rechner"
@@ -73,26 +77,75 @@
                             Click="Button_open_diagramm"
                             />
                 </StackPanel>
+                <!-- Ausgaben hinzufügen -->
+                <StackPanel x:Name="Show_expenses"
+                            Orientation="Vertical"
+                            Grid.Row="1"
+                            Visibility="Collapsed">
+                    <Button Content="Ausgabe hinzufügen"
+                            Width="250"
+                            Height="35"
+                            HorizontalAlignment="Left"
+                            Margin="5 0 5 20"
+                            FontFamily="Arial Black"
+                            FontSize="20"
+                            Click="Button_add_expenses"/>
+                    <!-- Ausgaben hinzufügen per Knopfdruck  -->
+                    <ItemsControl ItemsSource="{Binding Expenses}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox Text="{Binding Name}"
+                                             Background="AntiqueWhite"
+                                             Foreground="YellowGreen"
+                                             FontFamily="Arial"
+                                             FontSize="24"
+                                             Margin="2 2 2 2"
+                                             BorderBrush="Black"
+                                             BorderThickness="3"/>
+                                    <TextBox Text="{Binding Betrag}"
+                                             Background="AntiqueWhite"
+                                             Foreground="Red"
+                                             FontFamily="Arial"
+                                             FontSize="24"
+                                             Margin="2 2 2 2"
+                                             BorderBrush="Black"
+                                             BorderThickness="3"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
 
-                <!-- Eingabe für Haushaltsplaner und Rechner -->
+                <!-- Eingabe für Diagramm -->
 
                 <StackPanel Grid.Row="1"
                             Grid.Column="2"
                             Orientation="Vertical"
                             Visibility="Collapsed"
                             x:Name="Show_Input">
-                    <Label Content="Ausgaben:" FontSize="23"/>
+                    <Label Content="Ausgaben:"
+                           FontSize="23"
+                           Background="AntiqueWhite"
+                           Opacity="0.5"/>
                     <StackPanel Orientation="Vertical"
                                 Width="Auto"
                                 Height="Auto">
                         <TextBox ToolTip="Bitte Betrag eingeben"
                                  x:Name="userInputAusgaben"
                                  BorderBrush="Black"
-                                 BorderThickness="2"/>
+                                 BorderThickness="2"
+                                 Background="AntiqueWhite"/>
                         <Button Content="Bestätigen"
                                 Click="Button_choose_date"
                                 BorderBrush="Black"
-                                BorderThickness="2"/>
+                                BorderThickness="2"
+                                Background="AntiqueWhite"/>
+                        <Button Content="Löschen"
+                                Click="Button_delete_diagramm"
+                                BorderBrush="Black"
+                                BorderThickness="2"
+                                Background="AntiqueWhite"/>
                     </StackPanel>
                 </StackPanel>
 
