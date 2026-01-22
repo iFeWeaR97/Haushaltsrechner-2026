@@ -20,6 +20,7 @@ namespace WPF_Test
         private int timeIndex = 0;
 
         public ObservableCollection<Expense> Expenses { get; set; } = new();
+        public ObservableCollection<Income> Incomes { get; set; } = new();
 
         private List<double> Ausgaben = new();
 
@@ -53,8 +54,9 @@ namespace WPF_Test
 
         private void Button_open_diagramm(object sender, RoutedEventArgs e)
         {
-            Show_expenses.Visibility = Visibility.Collapsed;
-           
+  
+            Show_calc.Visibility = Visibility.Collapsed;
+
             bool show = Show_Input.Visibility != Visibility.Visible;
 
             Show_Input.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
@@ -101,18 +103,18 @@ namespace WPF_Test
             BuildPlot();
         }
 
-
-
-
         private void Button_open_finance(object sender, RoutedEventArgs e)
         {
 
             Show_Input.Visibility = Visibility.Collapsed;
             MyPlot.Visibility = Visibility.Collapsed;
+            Show_calc.Visibility = Visibility.Collapsed;
 
-            bool show_finance = Show_expenses.Visibility != Visibility.Visible;
+            bool show_expenses = Show_expenses.Visibility != Visibility.Visible; 
+            Show_expenses.Visibility = show_expenses ? Visibility.Visible : Visibility.Collapsed;
 
-            Show_expenses.Visibility = show_finance ? Visibility.Visible : Visibility.Collapsed;
+            bool show_incomes = Show_incomes.Visibility != Visibility.Visible;
+            Show_incomes.Visibility = show_incomes ? Visibility.Visible : Visibility.Collapsed;
 
         }
 
@@ -133,6 +135,39 @@ namespace WPF_Test
                 Betrag = "0€"
 
             });
+
+        }
+
+        public class Income
+        {
+            public string Name_income { get; set; }
+            public string Betrag_income { get; set; }
+
+        }
+
+
+        private void Button_add_incomes(object sender, RoutedEventArgs e)
+        {
+
+            Incomes.Add(new Income
+            {
+                Name_income = "Einnahmen",
+                Betrag_income = "0€"
+
+            });
+
+        }
+
+        private void Button_open_calc (object sender, RoutedEventArgs e)
+        {
+
+            Show_Input.Visibility = Visibility.Collapsed;
+            MyPlot.Visibility = Visibility.Collapsed;
+            Show_expenses.Visibility = Visibility.Collapsed;
+            Show_incomes.Visibility = Visibility.Collapsed;
+
+            bool show_calc = Show_calc.Visibility != Visibility.Visible;
+            Show_calc.Visibility = show_calc ? Visibility.Visible : Visibility.Collapsed;
 
         }
 

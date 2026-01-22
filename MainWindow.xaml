@@ -3,12 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:oxy="http://oxyplot.org/wpf"
 
-        Title="Haushaltsplaner" Height="650" Width="800">
+        Title="Haushaltsplaner" Height="650" Width="800"
+        MinHeight="400" MinWidth="550">
 
     <Window.Background>
         <ImageBrush ImageSource="Pictures/background.jpg"
                     Stretch="UniformToFill"
-                    Opacity="0.7"/>
+                    Opacity="0.6"/>
 
     </Window.Background>
 
@@ -44,77 +45,137 @@
         <Label Content="Haushaltsplaner 2026"
                DockPanel.Dock="Top"
                HorizontalContentAlignment="Center"
-               FontSize="26"/>
+               FontSize="30"/>
         <ScrollViewer VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Auto">
             <!-- Hauptbereich -->
-            <Grid Margin="10">
+            <Grid Margin="10" ShowGridLines="False">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="20"/>
                     <RowDefinition Height="*"/>
-
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+
+                </Grid.ColumnDefinitions>
 
                 <!-- Buttons -->
                 <StackPanel Grid.Row="0"
+                            Grid.ColumnSpan="2"
+                            VerticalAlignment="Center"
                             Orientation="Horizontal"
                             HorizontalAlignment="Center">
                     <Button Margin="5"
                             Padding="10"
                             Content="Haushaltsplaner"
-                            FontSize="16"
+                            FontSize="20"
                             Click="Button_open_finance"/>
                     <Button Margin="5"
                             Padding="10"
                             Content="Rechner"
-                            FontSize="16"/>
+                            Click="Button_open_calc"
+                            FontSize="20"/>
                     <Button Margin="5"
                             Padding="10"
                             Content="Diagramm"
-                            FontSize="16"
+                            FontSize="20"
                             Click="Button_open_diagramm"
                             />
                 </StackPanel>
-                <!-- Ausgaben hinzufügen -->
-                <StackPanel x:Name="Show_expenses"
-                            Orientation="Vertical"
-                            Grid.Row="1"
-                            Visibility="Collapsed">
-                    <Button Content="Ausgabe hinzufügen"
-                            Width="250"
-                            Height="35"
+
+                <StackPanel Grid.Row="1"
                             HorizontalAlignment="Left"
-                            Margin="5 0 5 20"
-                            FontFamily="Arial Black"
-                            FontSize="20"
-                            Click="Button_add_expenses"/>
-                    <!-- Ausgaben hinzufügen per Knopfdruck  -->
-                    <ItemsControl ItemsSource="{Binding Expenses}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBox Text="{Binding Name}"
-                                             Background="AntiqueWhite"
-                                             Foreground="YellowGreen"
-                                             FontFamily="Arial"
-                                             FontSize="24"
-                                             Margin="2 2 2 2"
-                                             BorderBrush="Black"
-                                             BorderThickness="3"/>
-                                    <TextBox Text="{Binding Betrag}"
-                                             Background="AntiqueWhite"
-                                             Foreground="Red"
-                                             FontFamily="Arial"
-                                             FontSize="24"
-                                             Margin="2 2 2 2"
-                                             BorderBrush="Black"
-                                             BorderThickness="3"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                            Orientation="Horizontal">
+
+                    <!-- Ausgaben hinzufügen -->
+                    <StackPanel x:Name="Show_expenses"
+                                Orientation="Vertical"
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Visibility="Collapsed">
+                        <Button Content="Ausgabe hinzufügen"
+                                Width="250"
+                                Height="35"
+                                HorizontalAlignment="Left"
+                                Margin="5 0 5 20"
+                                FontFamily="Arial Black"
+                                FontSize="20"
+                                Click="Button_add_expenses"/>
+
+                        <!-- Ausgaben hinzufügen per Knopfdruck  -->
+                        <ItemsControl ItemsSource="{Binding Expenses}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Text="{Binding Name}"
+                                                 Background="AntiqueWhite"
+                                                 Foreground="YellowGreen"
+                                                 FontFamily="Arial"
+                                                 FontSize="24"
+                                                 Margin="2 2 2 2"
+                                                 BorderBrush="Black"
+                                                 BorderThickness="3"/>
+                                        <TextBox Text="{Binding Betrag}"
+                                                 Background="AntiqueWhite"
+                                                 Foreground="Red"
+                                                 FontFamily="Arial"
+                                                 FontSize="24"
+                                                 Margin="2 2 2 2"
+                                                 BorderBrush="Black"
+                                                 BorderThickness="3"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <!-- Einnahmen hinzufügen -->
+                    <StackPanel x:Name="Show_incomes"
+                                Orientation="Vertical"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Visibility="Collapsed">
+                        <Button Content="Einnahmen hinzufügen"
+                                Width="250"
+                                Height="35"
+                                HorizontalAlignment="Left"
+                                Margin="5 0 5 20"
+                                FontFamily="Arial Black"
+                                FontSize="20"
+                                Click="Button_add_incomes"/>
+
+                        <!-- Einnahmenhinzufügen per Knopfdruck  -->
+                        <ItemsControl ItemsSource="{Binding Incomes}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Text="{Binding Name_income}"
+                                                 Background="AntiqueWhite"
+                                                 Foreground="YellowGreen"
+                                                 FontFamily="Arial"
+                                                 FontSize="24"
+                                                 Margin="2 2 2 2"
+                                                 BorderBrush="Black"
+                                                 BorderThickness="3"/>
+                                        <TextBox Text="{Binding Betrag_income}"
+                                                 Background="AntiqueWhite"
+                                                 Foreground="Green"
+                                                 FontFamily="Arial"
+                                                 FontSize="24"
+                                                 Margin="2 2 2 2"
+                                                 BorderBrush="Black"
+                                                 BorderThickness="3"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
                 </StackPanel>
 
                 <!-- Eingabe für Diagramm -->
@@ -123,7 +184,9 @@
                             Grid.Column="2"
                             Orientation="Vertical"
                             Visibility="Collapsed"
-                            x:Name="Show_Input">
+                            x:Name="Show_Input"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
                     <Label Content="Ausgaben:"
                            FontSize="23"
                            Background="AntiqueWhite"
@@ -149,12 +212,94 @@
                     </StackPanel>
                 </StackPanel>
 
-                <oxy:PlotView Grid.Row="3"
+                <!-- Diagramm -->
+                <oxy:PlotView Grid.Row="2"
+                              Grid.Column="0"
                               x:Name="MyPlot"
                               Model="{Binding PlotModel}"
-                              Margin="10"
-                              Visibility="Collapsed"/>
+                              Margin="5"
+                              Visibility="Collapsed"
+                              MinHeight="500"
+                              MinWidth="500"/>
 
+
+                <StackPanel Grid.Row="2"
+                            HorizontalAlignment="Center"
+                            x:Name="Show_calc"
+                            Visibility="Collapsed">
+                    <!--- Erste Reihe -->
+                    <StackPanel Orientation="Horizontal"
+                                Grid.Row="2"
+                                Grid.ColumnSpan="1"
+                                HorizontalAlignment="Center">
+
+                        <Button Content="0"
+                                Width="50"
+                                Height="50"/>
+                        <Button Content="1"
+                                Width="50"
+                                Height="50"/>
+                        <Button Content="2"
+                                Width="50"
+                                Height="50"/>
+                        <Button Content="3"
+                                Width="50"
+                                Height="50"/>
+                    </StackPanel>
+                    <!--- Zweite Reihe -->
+                    <StackPanel Orientation="Horizontal"
+                                Grid.Row="3"
+                                Grid.ColumnSpan="1"
+                                HorizontalAlignment="Center">
+                        <Button Content="4"
+                                Width="50"
+                                Height="50"/>
+                        <Button Content="5"
+                                Width="50"
+                                Height="50"/>
+                        <Button Content="6"
+                                Width="50"
+                                Height="50"/>
+                        <Button Content="7"
+                                Width="50"
+                                Height="50"/>
+
+                    </StackPanel>
+
+                    <!--- Dritte Reihe -->
+                    <StackPanel Orientation="Horizontal"
+                                Grid.Row="4"
+                                Grid.ColumnSpan="1"
+                                HorizontalAlignment="Center">
+                        <Button Content="8"
+                                Width="50"
+                                Height="50"/>
+                        <Button Content="9"
+                                Width="50"
+                                Height="50"/>
+                        <Button Content="+"
+                                Width="50"
+                                Height="50"/>
+                        <Button Content="-"
+                                Width="50"
+                                Height="50"/>
+                    </StackPanel>
+
+                    <!--- Operationen Reihe -->
+                    <StackPanel Orientation="Horizontal"
+                                Grid.Row="5"
+                                Grid.ColumnSpan="1"
+                                HorizontalAlignment="Center">
+
+
+                        <Button Content="x"
+                                Width="50"
+                                Height="50"/>
+                        <Button Content=":"
+                                Width="50"
+                                Height="50"/>
+                    </StackPanel>
+                </StackPanel>
             </Grid>
         </ScrollViewer>
     </DockPanel>
