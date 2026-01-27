@@ -171,6 +171,83 @@ namespace WPF_Test
 
         }
 
+        //Funktionen für die einezlenen Buttons (Rechner)
+        private void Value_0(object sender, RoutedEventArgs e)
+        {
+            Calc_Result.Content += "0";
+        }
+        private void Value_1(object sender, RoutedEventArgs e)
+        {
+            Calc_Result.Content += "1";
+        }
+        private void Value_2(object sender, RoutedEventArgs e)
+        {
+            Calc_Result.Content += "2";
+        }
+        private void Value_3(object sender, RoutedEventArgs e)
+        {
+            Calc_Result.Content += "3";
+        }
+        private void Value_4(object sender, RoutedEventArgs e)
+        {
+            Calc_Result.Content += "4";
+        }
+        private void Value_5(object sender, RoutedEventArgs e)
+        {
+            Calc_Result.Content += "5";
+        }
+        private void Value_6(object sender, RoutedEventArgs e)
+        {
+            Calc_Result.Content += "6";
+        }
+        private void Value_7(object sender, RoutedEventArgs e)
+        {
+            Calc_Result.Content += "7";
+        }
+        private void Value_8(object sender, RoutedEventArgs e)
+        {
+            Calc_Result.Content += "8";
+        }
+        private void Value_9(object sender, RoutedEventArgs e)
+        {
+            Calc_Result.Content += "9";
+        }
+
+        private void Value_Plus(object sender, RoutedEventArgs e)
+        {
+            Calc_Result.Content += "+";
+        }
+        private void Value_Minus(object sender, RoutedEventArgs e)
+        {
+            Calc_Result.Content += "-";
+        }
+        private void Value_multiplikation(object sender, RoutedEventArgs e)
+        {
+            Calc_Result.Content += "x";
+        }
+        private void Value_division(object sender, RoutedEventArgs e)
+        {
+            Calc_Result.Content += ":";
+        }
+        private void Delete(object sender, RoutedEventArgs e)
+        {
+            Calc_Result.Content = "";
+        }
+
+        private void Delete_All(object sender, RoutedEventArgs e)
+        {
+            Calc_Result.Content = "";
+        }
+
+
+        private void Calculator_Operation()
+        {
+
+            
+
+
+        }
+
 
     }
 }

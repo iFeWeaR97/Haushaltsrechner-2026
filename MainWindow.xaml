@@ -62,7 +62,6 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
-
                 </Grid.ColumnDefinitions>
 
                 <!-- Buttons -->
@@ -222,11 +221,28 @@
                               MinHeight="500"
                               MinWidth="500"/>
 
-
+                <!-- Rechner -->
                 <StackPanel Grid.Row="2"
                             HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
                             x:Name="Show_calc"
-                            Visibility="Collapsed">
+                            Visibility="Visible" Background="SlateGray">
+
+                    <!-- Ergebnisanzeige -->
+                    <Label Content="Result"
+                           FontSize="40"
+                           HorizontalAlignment="Center"
+                           HorizontalContentAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           BorderBrush="Black"
+                           Background="DimGray"
+                           Foreground="White"
+                           BorderThickness="3"
+                           x:Name="Calc_Result"
+                           Height="100"
+                           Width="320"
+                           />
+
                     <!--- Erste Reihe -->
                     <StackPanel Orientation="Horizontal"
                                 Grid.Row="2"
@@ -234,17 +250,21 @@
                                 HorizontalAlignment="Center">
 
                         <Button Content="0"
-                                Width="50"
-                                Height="50"/>
+                                Width="80"
+                                Height="80"
+                                Click="Value_0"/>
                         <Button Content="1"
-                                Width="50"
-                                Height="50"/>
+                                Width="80"
+                                Height="80"
+                                Click="Value_1"/>
                         <Button Content="2"
-                                Width="50"
-                                Height="50"/>
+                                Width="80"
+                                Height="80"
+                                Click="Value_2"/>
                         <Button Content="3"
-                                Width="50"
-                                Height="50"/>
+                                Width="80"
+                                Height="80"
+                                Click="Value_3"/>
                     </StackPanel>
                     <!--- Zweite Reihe -->
                     <StackPanel Orientation="Horizontal"
@@ -252,17 +272,21 @@
                                 Grid.ColumnSpan="1"
                                 HorizontalAlignment="Center">
                         <Button Content="4"
-                                Width="50"
-                                Height="50"/>
+                                Width="80"
+                                Height="80"
+                                Click="Value_4"/>
                         <Button Content="5"
-                                Width="50"
-                                Height="50"/>
+                                Width="80"
+                                Height="80"
+                                Click="Value_5"/>
                         <Button Content="6"
-                                Width="50"
-                                Height="50"/>
+                                Width="80"
+                                Height="80"
+                                Click="Value_6"/>
                         <Button Content="7"
-                                Width="50"
-                                Height="50"/>
+                                Width="80"
+                                Height="80"
+                                Click="Value_7"/>
 
                     </StackPanel>
 
@@ -272,17 +296,21 @@
                                 Grid.ColumnSpan="1"
                                 HorizontalAlignment="Center">
                         <Button Content="8"
-                                Width="50"
-                                Height="50"/>
+                                Width="80"
+                                Height="80"
+                                Click="Value_8"/>
                         <Button Content="9"
-                                Width="50"
-                                Height="50"/>
+                                Width="80"
+                                Height="80"
+                                Click="Value_9"/>
                         <Button Content="+"
-                                Width="50"
-                                Height="50"/>
+                                Width="80"
+                                Height="80"
+                                Click="Value_Plus"/>
                         <Button Content="-"
-                                Width="50"
-                                Height="50"/>
+                                Width="80"
+                                Height="80"
+                                Click="Value_Minus"/>
                     </StackPanel>
 
                     <!--- Operationen Reihe -->
@@ -290,14 +318,22 @@
                                 Grid.Row="5"
                                 Grid.ColumnSpan="1"
                                 HorizontalAlignment="Center">
-
-
                         <Button Content="x"
-                                Width="50"
-                                Height="50"/>
+                                Width="80"
+                                Height="80"
+                                Click="Value_multiplikation"/>
                         <Button Content=":"
-                                Width="50"
-                                Height="50"/>
+                                Width="80"
+                                Height="80"
+                                Click="Value_division"/>
+                        <Button Content="DEL"
+                                Width="80"
+                                Height="80"
+                                Click="Delete"/>
+                        <Button Content="AC"
+                                Width="80"
+                                Height="80"
+                                Click="Delete_All"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>
