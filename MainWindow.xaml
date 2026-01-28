@@ -252,19 +252,19 @@
                         <Button Content="0"
                                 Width="80"
                                 Height="80"
-                                Click="Value_0"/>
+                                Click="Calculator_Buttons"/>
                         <Button Content="1"
                                 Width="80"
                                 Height="80"
-                                Click="Value_1"/>
+                                Click="Calculator_Buttons"/>
                         <Button Content="2"
                                 Width="80"
                                 Height="80"
-                                Click="Value_2"/>
+                                Click="Calculator_Buttons"/>
                         <Button Content="3"
                                 Width="80"
                                 Height="80"
-                                Click="Value_3"/>
+                                Click="Calculator_Buttons"/>
                     </StackPanel>
                     <!--- Zweite Reihe -->
                     <StackPanel Orientation="Horizontal"
@@ -274,19 +274,19 @@
                         <Button Content="4"
                                 Width="80"
                                 Height="80"
-                                Click="Value_4"/>
+                                Click="Calculator_Buttons"/>
                         <Button Content="5"
                                 Width="80"
                                 Height="80"
-                                Click="Value_5"/>
+                                Click="Calculator_Buttons"/>
                         <Button Content="6"
                                 Width="80"
                                 Height="80"
-                                Click="Value_6"/>
+                                Click="Calculator_Buttons"/>
                         <Button Content="7"
                                 Width="80"
                                 Height="80"
-                                Click="Value_7"/>
+                                Click="Calculator_Buttons"/>
 
                     </StackPanel>
 
@@ -298,19 +298,19 @@
                         <Button Content="8"
                                 Width="80"
                                 Height="80"
-                                Click="Value_8"/>
+                                Click="Calculator_Buttons"/>
                         <Button Content="9"
                                 Width="80"
                                 Height="80"
-                                Click="Value_9"/>
+                                Click="Calculator_Buttons"/>
                         <Button Content="+"
                                 Width="80"
                                 Height="80"
-                                Click="Value_Plus"/>
+                                Click="Calculator_Buttons"/>
                         <Button Content="-"
                                 Width="80"
                                 Height="80"
-                                Click="Value_Minus"/>
+                                Click="Calculator_Buttons"/>
                     </StackPanel>
 
                     <!--- Operationen Reihe -->
@@ -321,19 +321,19 @@
                         <Button Content="x"
                                 Width="80"
                                 Height="80"
-                                Click="Value_multiplikation"/>
+                                Click="Calculator_Buttons"/>
                         <Button Content=":"
                                 Width="80"
                                 Height="80"
-                                Click="Value_division"/>
+                                Click="Calculator_Buttons"/>
                         <Button Content="DEL"
                                 Width="80"
                                 Height="80"
-                                Click="Delete"/>
+                                Click="Calculator_Buttons"/>
                         <Button Content="AC"
                                 Width="80"
                                 Height="80"
-                                Click="Delete_All"/>
+                                Click="Calculator_Buttons"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>
