@@ -222,120 +222,155 @@
                               MinWidth="500"/>
 
                 <!-- Rechner -->
-                <StackPanel Grid.Row="2"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            x:Name="Show_calc"
-                            Visibility="Visible" Background="SlateGray">
+                <Border Background="Transparent"
+                        BorderBrush="Black"
+                        BorderThickness="3"
+                        Width="405"
+                        Height="425"
+                        Grid.Row="2"
+                        x:Name="Show_calc"
+                        Visibility="Collapsed">
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="SlateGray">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="100"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="400"/>
+                            </Grid.ColumnDefinitions>
 
-                    <!-- Ergebnisanzeige -->
-                    <Label Content="Result"
-                           FontSize="40"
-                           HorizontalAlignment="Center"
-                           HorizontalContentAlignment="Center"
-                           VerticalContentAlignment="Center"
-                           BorderBrush="Black"
-                           Background="DimGray"
-                           Foreground="White"
-                           BorderThickness="3"
-                           x:Name="Calc_Result"
-                           Height="100"
-                           Width="320"
-                           />
+                            <!-- Ergebnisanzeige -->
+                            <Label Content="Result"
+                                   FontSize="40"
+                                   HorizontalAlignment="Center"
+                                   HorizontalContentAlignment="Center"
+                                   VerticalContentAlignment="Center"
+                                   BorderBrush="Black"
+                                   Background="LightSlateGray"
+                                   Foreground="GhostWhite"
+                                   BorderThickness="3"
+                                   x:Name="Calc_Result"
+                                   Height="100"
+                                   Width="400"/>
 
-                    <!--- Erste Reihe -->
-                    <StackPanel Orientation="Horizontal"
-                                Grid.Row="2"
-                                Grid.ColumnSpan="1"
-                                HorizontalAlignment="Center">
+                            <Label Height="50"
+                                   Width="100"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Bottom"
+                                   VerticalContentAlignment="Center"
+                                   HorizontalContentAlignment="Center"
+                                   Content="=Ergebnis"
+                                   FontFamily="Agency FB"
+                                   FontSize="20"
+                                   Foreground="Black"
+                                   Opacity="0.5"/>
 
-                        <Button Content="0"
-                                Width="80"
-                                Height="80"
-                                Click="Calculator_Buttons"/>
-                        <Button Content="1"
-                                Width="80"
-                                Height="80"
-                                Click="Calculator_Buttons"/>
-                        <Button Content="2"
-                                Width="80"
-                                Height="80"
-                                Click="Calculator_Buttons"/>
-                        <Button Content="3"
-                                Width="80"
-                                Height="80"
-                                Click="Calculator_Buttons"/>
+                        </Grid>
+
+                        <!--- Erste Reihe -->
+                        <StackPanel Orientation="Horizontal"
+                                    Grid.Row="2"
+                                    Grid.ColumnSpan="1"
+                                    HorizontalAlignment="Center">
+
+                            <Button Content="0"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+                            <Button Content="1"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+                            <Button Content="2"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+                            <Button Content="3"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+                            <Button Content="4"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+                        </StackPanel>
+                        <!--- Zweite Reihe -->
+                        <StackPanel Orientation="Horizontal"
+                                    Grid.Row="3"
+                                    Grid.ColumnSpan="1"
+                                    HorizontalAlignment="Center">
+                            <Button Content="5"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+                            <Button Content="6"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+                            <Button Content="7"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+                            <Button Content="8"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+                            <Button Content="9"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+
+                        </StackPanel>
+
+                        <!--- Dritte Reihe -->
+                        <StackPanel Orientation="Horizontal"
+                                    Grid.Row="4"
+                                    Grid.ColumnSpan="1"
+                                    HorizontalAlignment="Center">
+                            <Button Content="+"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+                            <Button Content="-"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+                            <Button Content="x"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+                            <Button Content=":"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+                            <Button Content="AC"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+                        </StackPanel>
+
+                        <!--- Operationen Reihe -->
+                        <StackPanel Orientation="Horizontal"
+                                    Grid.Row="5"
+                                    Grid.ColumnSpan="1"
+                                    HorizontalAlignment="Center">
+                            <Button Content="DEL"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+                            <Button Content="="
+                                    FontSize="50"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Width="80"
+                                    Height="80"
+                                    Click="Calculator_Buttons"/>
+                        </StackPanel>
                     </StackPanel>
-                    <!--- Zweite Reihe -->
-                    <StackPanel Orientation="Horizontal"
-                                Grid.Row="3"
-                                Grid.ColumnSpan="1"
-                                HorizontalAlignment="Center">
-                        <Button Content="4"
-                                Width="80"
-                                Height="80"
-                                Click="Calculator_Buttons"/>
-                        <Button Content="5"
-                                Width="80"
-                                Height="80"
-                                Click="Calculator_Buttons"/>
-                        <Button Content="6"
-                                Width="80"
-                                Height="80"
-                                Click="Calculator_Buttons"/>
-                        <Button Content="7"
-                                Width="80"
-                                Height="80"
-                                Click="Calculator_Buttons"/>
-
-                    </StackPanel>
-
-                    <!--- Dritte Reihe -->
-                    <StackPanel Orientation="Horizontal"
-                                Grid.Row="4"
-                                Grid.ColumnSpan="1"
-                                HorizontalAlignment="Center">
-                        <Button Content="8"
-                                Width="80"
-                                Height="80"
-                                Click="Calculator_Buttons"/>
-                        <Button Content="9"
-                                Width="80"
-                                Height="80"
-                                Click="Calculator_Buttons"/>
-                        <Button Content="+"
-                                Width="80"
-                                Height="80"
-                                Click="Calculator_Buttons"/>
-                        <Button Content="-"
-                                Width="80"
-                                Height="80"
-                                Click="Calculator_Buttons"/>
-                    </StackPanel>
-
-                    <!--- Operationen Reihe -->
-                    <StackPanel Orientation="Horizontal"
-                                Grid.Row="5"
-                                Grid.ColumnSpan="1"
-                                HorizontalAlignment="Center">
-                        <Button Content="x"
-                                Width="80"
-                                Height="80"
-                                Click="Calculator_Buttons"/>
-                        <Button Content=":"
-                                Width="80"
-                                Height="80"
-                                Click="Calculator_Buttons"/>
-                        <Button Content="DEL"
-                                Width="80"
-                                Height="80"
-                                Click="Calculator_Buttons"/>
-                        <Button Content="AC"
-                                Width="80"
-                                Height="80"
-                                Click="Calculator_Buttons"/>
-                    </StackPanel>
-                </StackPanel>
+                </Border>
             </Grid>
         </ScrollViewer>
     </DockPanel>

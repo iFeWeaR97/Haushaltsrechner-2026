@@ -56,7 +56,7 @@ namespace WPF_Test
 
         private void Button_open_diagramm(object sender, RoutedEventArgs e)
         {
-  
+
             Show_calc.Visibility = Visibility.Collapsed;
 
             bool show = Show_Input.Visibility != Visibility.Visible;
@@ -112,7 +112,7 @@ namespace WPF_Test
             MyPlot.Visibility = Visibility.Collapsed;
             Show_calc.Visibility = Visibility.Collapsed;
 
-            bool show_expenses = Show_expenses.Visibility != Visibility.Visible; 
+            bool show_expenses = Show_expenses.Visibility != Visibility.Visible;
             Show_expenses.Visibility = show_expenses ? Visibility.Visible : Visibility.Collapsed;
 
             bool show_incomes = Show_incomes.Visibility != Visibility.Visible;
@@ -160,7 +160,7 @@ namespace WPF_Test
 
         }
 
-        private void Button_open_calc (object sender, RoutedEventArgs e)
+        private void Button_open_calc(object sender, RoutedEventArgs e)
         {
 
             Show_Input.Visibility = Visibility.Collapsed;
@@ -178,27 +178,39 @@ namespace WPF_Test
         private void Calculator_Buttons(object sender, RoutedEventArgs e)
         {
             Button calcButton = sender as Button;
-            
 
             string valueCalc = calcButton.Content.ToString();
             Calc_Result.Content += valueCalc;
-
-
-            if (valueCalc == "DEL")
+            try
             {
-                Calc_Result.Content = "";
-            }
-         
+                switch (valueCalc)
+                {
+                    case "DEL":
+                        Calc_Result.Content = "";
+                        break;
 
+                    case "AC":
+                        Calc_Result.Content = "";
+                        break;
+                    case "=":
+                        Calculator_Operation();
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fehler bei der Berechnung: " + ex.Message);
+            }
         }
         private void Calculator_Operation()
         {
+            /*/ if (Calc_Result.Content != null)
+             {
 
-            
-
-
+                 string ergebnis = Calc_Result.Content.ToString();
+             }
+             else /*/
+            MessageBox.Show("Keine Eingabe vorhanden.");
         }
-
-
     }
 }
