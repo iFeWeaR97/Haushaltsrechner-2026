@@ -229,7 +229,7 @@
                         Height="425"
                         Grid.Row="2"
                         x:Name="Show_calc"
-                        Visibility="Collapsed">
+                        Visibility="Visible">
                     <StackPanel
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
@@ -252,7 +252,7 @@
                                    Background="LightSlateGray"
                                    Foreground="GhostWhite"
                                    BorderThickness="3"
-                                   x:Name="Calc_Result"
+                                   x:Name="Calc_Operation"
                                    Height="100"
                                    Width="400"/>
 
@@ -266,6 +266,7 @@
                                    FontFamily="Agency FB"
                                    FontSize="20"
                                    Foreground="Black"
+                                   x:Name="Calc_Result"
                                    Opacity="0.5"/>
 
                         </Grid>

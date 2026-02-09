@@ -107,7 +107,7 @@ namespace WPF_Test
 
         private void Button_open_finance(object sender, RoutedEventArgs e)
         {
-
+           
             Show_Input.Visibility = Visibility.Collapsed;
             MyPlot.Visibility = Visibility.Collapsed;
             Show_calc.Visibility = Visibility.Collapsed;
@@ -119,7 +119,6 @@ namespace WPF_Test
             Show_incomes.Visibility = show_incomes ? Visibility.Visible : Visibility.Collapsed;
 
         }
-
         public class Expense
         {
             public string Name { get; set; }
@@ -180,22 +179,38 @@ namespace WPF_Test
             Button calcButton = sender as Button;
 
             string valueCalc = calcButton.Content.ToString();
-            Calc_Result.Content += valueCalc;
+            Calc_Operation.Content += valueCalc;
+            double firstNumber = double.TryParse(Calc_Operation.Content.ToString(), out firstNumber);
+            double secondNumber = 100;
             try
             {
                 switch (valueCalc)
                 {
                     case "DEL":
-                        Calc_Result.Content = "";
+                        Calc_Operation.Content = "";
                         break;
 
                     case "AC":
-                        Calc_Result.Content = "";
+                        Calc_Operation.Content = "";
+
+                        if (Calc_Operation.Content.ToString() != "")
+                        {
+                            Calc_Result.Content = firstNumber + secondNumber;
+                        }
+
                         break;
                     case "=":
                         Calculator_Operation();
                         break;
+                    case "+":
+                        if (Calc_Operation.Content.ToString() != "")
+                        {
+                            Calc_Result.Content = firstNumber + secondNumber;
+                        }
+                        break;
                 }
+
+             
             }
             catch (Exception ex)
             {
