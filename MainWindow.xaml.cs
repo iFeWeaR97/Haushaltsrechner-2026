@@ -16,14 +16,10 @@ namespace WPF_Test
     public partial class MainWindow : Window
     {
         public PlotModel PlotModel { get; set; }
-
-
         private LineSeries series;
         private int timeIndex = 0;
-
         public ObservableCollection<Expense> Expenses { get; set; } = new();
         public ObservableCollection<Income> Incomes { get; set; } = new();
-
         private List<double> Ausgaben = new();
 
         public MainWindow()
@@ -107,7 +103,7 @@ namespace WPF_Test
 
         private void Button_open_finance(object sender, RoutedEventArgs e)
         {
-           
+
             Show_Input.Visibility = Visibility.Collapsed;
             MyPlot.Visibility = Visibility.Collapsed;
             Show_calc.Visibility = Visibility.Collapsed;
@@ -180,7 +176,7 @@ namespace WPF_Test
 
             string valueCalc = calcButton.Content.ToString();
             Calc_Operation.Content += valueCalc;
-            double firstNumber = double.TryParse(Calc_Operation.Content.ToString(), out firstNumber);
+            double firstNumber = 0;
             double secondNumber = 100;
             try
             {
@@ -210,7 +206,7 @@ namespace WPF_Test
                         break;
                 }
 
-             
+
             }
             catch (Exception ex)
             {
@@ -226,6 +222,14 @@ namespace WPF_Test
              }
              else /*/
             MessageBox.Show("Keine Eingabe vorhanden.");
+        }
+
+        public void Menu_Button(object sender, RoutedEventArgs e)
+        {
+            Hide_menu.Visibility = Hide_menu.Visibility == Visibility.Visible
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+            
         }
     }
 }

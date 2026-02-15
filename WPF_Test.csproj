@@ -10,6 +10,10 @@
 
   <ItemGroup>
     <None Remove="pictures\background.jpg" />
+    <None Remove="pictures\calculator.png" />
+    <None Remove="pictures\diagram.png" />
+    <None Remove="pictures\finance.png" />
+    <None Remove="pictures\menu.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +23,10 @@
 
   <ItemGroup>
     <Resource Include="pictures\background.jpg" />
+    <Resource Include="pictures\calculator.png" />
+    <Resource Include="pictures\diagram.png" />
+    <Resource Include="pictures\finance.png" />
+    <Resource Include="pictures\menu.png" />
   </ItemGroup>
 
 </Project>
