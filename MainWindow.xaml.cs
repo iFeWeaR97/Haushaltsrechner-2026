@@ -1,235 +1,668 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
+using System.Text;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
+using Microsoft.Win32;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
-using System.Windows.Controls;
-
 
 namespace WPF_Test
 {
+    public class Expense : INotifyPropertyChanged
+    {
+        private string _name = "Neue Ausgabe";
+        private string _betrag = "0";
+
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                _name = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Betrag
+        {
+            get => _betrag;
+            set
+            {
+                _betrag = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(BetragValue));
+            }
+        }
+
+        public double BetragValue =>
+            double.TryParse(
+                Betrag.Replace(',', '.'),
+                NumberStyles.Any,
+                CultureInfo.InvariantCulture,
+                out double v)
+                ? v
+                : 0;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+
+    public class Income : INotifyPropertyChanged
+    {
+        private string _name = "Neue Einnahme";
+        private string _betrag = "0";
+
+        public string Name_income
+        {
+            get => _name;
+            set
+            {
+                _name = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Betrag_income
+        {
+            get => _betrag;
+            set
+            {
+                _betrag = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(BetragValue));
+            }
+        }
+
+        public double BetragValue =>
+            double.TryParse(
+                Betrag_income.Replace(',', '.'),
+                NumberStyles.Any,
+                CultureInfo.InvariantCulture,
+                out double v)
+                ? v
+                : 0;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+
     public partial class MainWindow : Window
     {
-        public PlotModel PlotModel { get; set; }
-        private LineSeries series;
-        private int timeIndex = 0;
         public ObservableCollection<Expense> Expenses { get; set; } = new();
         public ObservableCollection<Income> Incomes { get; set; } = new();
-        private List<double> Ausgaben = new();
+
+        public PlotModel PlotModel { get; set; }
+        public PlotModel OverviewModel { get; set; }
+
+        private string _calcInput = "";
+        private double _calcFirstNum = 0;
+        private string _calcOperator = "";
+        private bool _calcNewInput = true;
 
         public MainWindow()
         {
             InitializeComponent();
-            BuildPlot();
+
+            BuildPlots();
+
             DataContext = this;
+
+            Recalculate();
         }
 
-        private void Button_choose_date(object sender, RoutedEventArgs e)
+        private void HideAllPages()
         {
-            string userInput = userInputAusgaben.Text;
+            Page_Overview.Visibility = Visibility.Collapsed;
+            Page_Expenses.Visibility = Visibility.Collapsed;
+            Page_Incomes.Visibility = Visibility.Collapsed;
+            Page_Chart.Visibility = Visibility.Collapsed;
+            Page_Calc.Visibility = Visibility.Collapsed;
+        }
 
-            if (double.TryParse(userInput, NumberStyles.Any, new CultureInfo("de-DE"), out double result))
+        private void Nav_Overview(object sender, RoutedEventArgs e)
+        {
+            HideAllPages();
+            Page_Overview.Visibility = Visibility.Visible;
+            Recalculate();
+        }
+
+        private void Nav_Expenses(object sender, RoutedEventArgs e)
+        {
+            HideAllPages();
+            Page_Expenses.Visibility = Visibility.Visible;
+        }
+
+        private void Nav_Incomes(object sender, RoutedEventArgs e)
+        {
+            HideAllPages();
+            Page_Incomes.Visibility = Visibility.Visible;
+        }
+
+        private void Nav_Chart(object sender, RoutedEventArgs e)
+        {
+            HideAllPages();
+            Page_Chart.Visibility = Visibility.Visible;
+            RefreshMainChart();
+        }
+
+        private void Nav_Calc(object sender, RoutedEventArgs e)
+        {
+            HideAllPages();
+            Page_Calc.Visibility = Visibility.Visible;
+        }
+
+        private void Recalculate(object sender = null, RoutedEventArgs e = null)
+        {
+            double totalIncome = Incomes.Sum(i => i.BetragValue);
+            double totalExpense = Expenses.Sum(ex => ex.BetragValue);
+            double saldo = totalIncome - totalExpense;
+
+            var germanCulture = new CultureInfo("de-DE");
+
+            LabelTotalIncome.Text = totalIncome.ToString("N2", germanCulture) + " €";
+            LabelTotalExpense.Text = totalExpense.ToString("N2", germanCulture) + " €";
+            LabelSaldo.Text = saldo.ToString("N2", germanCulture) + " €";
+
+            LabelSaldo.Foreground = saldo >= 0
+                ? new SolidColorBrush(Color.FromRgb(99, 179, 237))
+                : new SolidColorBrush(Color.FromRgb(252, 129, 129));
+
+            RefreshOverviewChart(totalIncome, totalExpense);
+        }
+
+        private void Button_add_expenses(object sender, RoutedEventArgs e)
+        {
+            Expenses.Add(new Expense());
+            Recalculate();
+        }
+
+        private void Button_DeleteExpense(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is Expense exp)
             {
-                // Wert speichern
-                Ausgaben.Add(result);
-
-                // Punkt an Plot anhängen
-                series.Points.Add(new DataPoint(timeIndex, result));
-                timeIndex++;
-
-                PlotModel.InvalidatePlot(true);
+                Expenses.Remove(exp);
+                Recalculate();
             }
-            else
+        }
+
+        private void Button_add_incomes(object sender, RoutedEventArgs e)
+        {
+            Incomes.Add(new Income());
+            Recalculate();
+        }
+
+        private void Button_DeleteIncome(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is Income inc)
             {
-                MessageBox.Show("Bitte eine gültige Zahl eingeben.");
+                Incomes.Remove(inc);
+                Recalculate();
             }
         }
 
-        private void Button_open_diagramm(object sender, RoutedEventArgs e)
+        private void BuildPlots()
         {
+            OverviewModel = new PlotModel
+            {
+                Background = OxyColor.FromArgb(0, 0, 0, 0),
+                PlotAreaBackground = OxyColor.FromArgb(0, 0, 0, 0),
+                TextColor = OxyColors.LightGray
+            };
 
-            Show_calc.Visibility = Visibility.Collapsed;
+            OverviewModel.Axes.Add(new CategoryAxis
+            {
+                Position = AxisPosition.Left,
+                Key = "overviewCategories",
+                TextColor = OxyColors.LightGray,
+                TicklineColor = OxyColor.FromRgb(45, 55, 72)
+            });
 
-            bool show = Show_Input.Visibility != Visibility.Visible;
-
-            Show_Input.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
-            MyPlot.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        private void BuildPlot()
-        {
+            OverviewModel.Axes.Add(new LinearAxis
+            {
+                Position = AxisPosition.Bottom,
+                MinimumPadding = 0,
+                AbsoluteMinimum = 0,
+                TextColor = OxyColors.LightGray,
+                AxislineColor = OxyColor.FromRgb(45, 55, 72),
+                TicklineColor = OxyColor.FromRgb(45, 55, 72),
+                MajorGridlineStyle = LineStyle.Solid,
+                MajorGridlineColor = OxyColor.FromRgb(45, 55, 72)
+            });
 
             PlotModel = new PlotModel
             {
-                Title = "Übersicht der Ausgaben"
+                Title = "Ausgaben & Einnahmen im Überblick",
+                TitleColor = OxyColors.LightGray,
+                Background = OxyColor.FromArgb(0, 0, 0, 0),
+                PlotAreaBackground = OxyColor.FromArgb(0, 0, 0, 0),
+                TextColor = OxyColors.LightGray
             };
+
+            PlotModel.Axes.Add(new CategoryAxis
+            {
+                Position = AxisPosition.Left,
+                Key = "mainCategories",
+                TextColor = OxyColors.LightGray,
+                TicklineColor = OxyColor.FromRgb(45, 55, 72)
+            });
 
             PlotModel.Axes.Add(new LinearAxis
             {
                 Position = AxisPosition.Bottom,
-                Title = "Zeit"
+                Title = "Betrag in €",
+                MinimumPadding = 0,
+                AbsoluteMinimum = 0,
+                TextColor = OxyColors.LightGray,
+                TitleColor = OxyColors.LightGray,
+                AxislineColor = OxyColor.FromRgb(45, 55, 72),
+                TicklineColor = OxyColor.FromRgb(45, 55, 72),
+                MajorGridlineStyle = LineStyle.Solid,
+                MajorGridlineColor = OxyColor.FromRgb(45, 55, 72)
             });
-
-            PlotModel.Axes.Add(new LinearAxis
-            {
-                Position = AxisPosition.Left,
-                Title = "Ausgaben in €"
-            });
-
-            series = new LineSeries
-            {
-                Title = "Ausgabenhöhe",
-                Color = OxyColors.Red,
-                StrokeThickness = 2
-            };
-
-            PlotModel.Series.Add(series);
-            MyPlot.Model = PlotModel;
         }
 
+        private void RefreshOverviewChart(double income, double expense)
+        {
+            if (OverviewModel == null)
+                return;
+
+            OverviewModel.Series.Clear();
+
+            var catAxis = OverviewModel.Axes
+                .OfType<CategoryAxis>()
+                .FirstOrDefault();
+
+            if (catAxis != null)
+            {
+                catAxis.Labels.Clear();
+                catAxis.Labels.Add("Einnahmen");
+                catAxis.Labels.Add("Ausgaben");
+                catAxis.Labels.Add("Saldo");
+            }
+
+            double saldo = income - expense;
+
+            var series = new BarSeries
+            {
+                LabelPlacement = LabelPlacement.Outside,
+                LabelFormatString = "{0:N2} €",
+                TextColor = OxyColors.LightGray,
+                StrokeThickness = 1
+            };
+
+            series.Items.Add(new BarItem(income)
+            {
+                Color = OxyColor.FromRgb(56, 161, 105)
+            });
+
+            series.Items.Add(new BarItem(expense)
+            {
+                Color = OxyColor.FromRgb(229, 62, 62)
+            });
+
+            series.Items.Add(new BarItem(Math.Abs(saldo))
+            {
+                Color = saldo >= 0
+                    ? OxyColor.FromRgb(99, 179, 237)
+                    : OxyColor.FromRgb(252, 129, 129)
+            });
+
+            OverviewModel.Series.Add(series);
+            OverviewModel.InvalidatePlot(true);
+        }
+
+        private void RefreshMainChart()
+        {
+            if (PlotModel == null)
+                return;
+
+            PlotModel.Series.Clear();
+
+            var catAxis = PlotModel.Axes
+                .OfType<CategoryAxis>()
+                .FirstOrDefault();
+
+            if (catAxis != null)
+                catAxis.Labels.Clear();
+
+            var series = new BarSeries
+            {
+                Title = "Einnahmen / Ausgaben",
+                LabelPlacement = LabelPlacement.Outside,
+                LabelFormatString = "{0:N2} €",
+                TextColor = OxyColors.LightGray,
+                StrokeThickness = 1
+            };
+
+            foreach (var inc in Incomes)
+            {
+                series.Items.Add(new BarItem(inc.BetragValue)
+                {
+                    Color = OxyColor.FromRgb(56, 161, 105)
+                });
+
+                catAxis?.Labels.Add("Einnahme: " + inc.Name_income);
+            }
+
+            foreach (var ex in Expenses)
+            {
+                series.Items.Add(new BarItem(ex.BetragValue)
+                {
+                    Color = OxyColor.FromRgb(229, 62, 62)
+                });
+
+                catAxis?.Labels.Add("Ausgabe: " + ex.Name);
+            }
+
+            PlotModel.Series.Add(series);
+            PlotModel.InvalidatePlot(true);
+        }
+
+        private void Button_RefreshChart(object sender, RoutedEventArgs e)
+        {
+            Recalculate();
+            RefreshMainChart();
+        }
 
         private void Button_delete_diagramm(object sender, RoutedEventArgs e)
         {
-            PlotModel.Series.Remove(series);
+            if (PlotModel == null)
+                return;
+
+            PlotModel.Series.Clear();
+
+            var catAxis = PlotModel.Axes
+                .OfType<CategoryAxis>()
+                .FirstOrDefault();
+
+            catAxis?.Labels.Clear();
+
             PlotModel.InvalidatePlot(true);
-            userInputAusgaben.Clear();
-            BuildPlot();
         }
 
-        private void Button_open_finance(object sender, RoutedEventArgs e)
+        private void Calc_Click(object sender, RoutedEventArgs e)
         {
+            if (sender is not Button btn)
+                return;
 
-            Show_Input.Visibility = Visibility.Collapsed;
-            MyPlot.Visibility = Visibility.Collapsed;
-            Show_calc.Visibility = Visibility.Collapsed;
+            string val = btn.Content.ToString();
 
-            bool show_expenses = Show_expenses.Visibility != Visibility.Visible;
-            Show_expenses.Visibility = show_expenses ? Visibility.Visible : Visibility.Collapsed;
-
-            bool show_incomes = Show_incomes.Visibility != Visibility.Visible;
-            Show_incomes.Visibility = show_incomes ? Visibility.Visible : Visibility.Collapsed;
-
-        }
-        public class Expense
-        {
-            public string Name { get; set; }
-            public string Betrag { get; set; }
-
-        }
-
-
-        private void Button_add_expenses(object sender, RoutedEventArgs e)
-        {
-
-            Expenses.Add(new Expense
+            switch (val)
             {
-                Name = "Ausgaben",
-                Betrag = "0€"
+                case "AC":
+                    _calcInput = "";
+                    _calcFirstNum = 0;
+                    _calcOperator = "";
+                    _calcNewInput = true;
+                    CalcDisplay.Text = "0";
+                    CalcSubDisplay.Text = "";
+                    break;
 
+                case "DEL":
+                    if (_calcInput.Length > 0)
+                        _calcInput = _calcInput[..^1];
+
+                    CalcDisplay.Text = string.IsNullOrEmpty(_calcInput)
+                        ? "0"
+                        : _calcInput.Replace('.', ',');
+                    break;
+
+                case "±":
+                    if (double.TryParse(
+                            _calcInput.Replace(',', '.'),
+                            NumberStyles.Any,
+                            CultureInfo.InvariantCulture,
+                            out double negVal))
+                    {
+                        _calcInput = (-negVal).ToString(CultureInfo.InvariantCulture);
+                        CalcDisplay.Text = _calcInput.Replace('.', ',');
+                    }
+                    break;
+
+                case "%":
+                    if (double.TryParse(
+                            _calcInput.Replace(',', '.'),
+                            NumberStyles.Any,
+                            CultureInfo.InvariantCulture,
+                            out double pctVal))
+                    {
+                        _calcInput = (pctVal / 100).ToString(CultureInfo.InvariantCulture);
+                        CalcDisplay.Text = _calcInput.Replace('.', ',');
+                    }
+                    break;
+
+                case "+":
+                case "-":
+                case "×":
+                case "÷":
+                    if (_calcInput != "")
+                    {
+                        double.TryParse(
+                            _calcInput.Replace(',', '.'),
+                            NumberStyles.Any,
+                            CultureInfo.InvariantCulture,
+                            out _calcFirstNum);
+
+                        CalcSubDisplay.Text = _calcInput.Replace('.', ',') + " " + val;
+                    }
+
+                    _calcOperator = val;
+                    _calcNewInput = true;
+                    _calcInput = "";
+                    break;
+
+                case "=":
+                    if (_calcOperator != "" && _calcInput != "")
+                    {
+                        double.TryParse(
+                            _calcInput.Replace(',', '.'),
+                            NumberStyles.Any,
+                            CultureInfo.InvariantCulture,
+                            out double secondNum);
+
+                        double result = _calcOperator switch
+                        {
+                            "+" => _calcFirstNum + secondNum,
+                            "-" => _calcFirstNum - secondNum,
+                            "×" => _calcFirstNum * secondNum,
+                            "÷" => secondNum != 0 ? _calcFirstNum / secondNum : double.NaN,
+                            _ => secondNum
+                        };
+
+                        CalcSubDisplay.Text =
+                            CalcSubDisplay.Text + " " + _calcInput.Replace('.', ',') + " =";
+
+                        if (double.IsNaN(result))
+                        {
+                            _calcInput = "";
+                            CalcDisplay.Text = "Fehler";
+                        }
+                        else
+                        {
+                            _calcInput = result.ToString(CultureInfo.InvariantCulture);
+                            CalcDisplay.Text = result.ToString("N2", new CultureInfo("de-DE"));
+                        }
+
+                        _calcOperator = "";
+                        _calcNewInput = true;
+                    }
+                    break;
+
+                case ",":
+                    if (!_calcInput.Contains('.') && !_calcInput.Contains(','))
+                    {
+                        if (_calcInput == "")
+                            _calcInput = "0";
+
+                        _calcInput += ",";
+                        CalcDisplay.Text = _calcInput;
+                    }
+                    break;
+
+                default:
+                    if (_calcNewInput)
+                    {
+                        _calcInput = "";
+                        _calcNewInput = false;
+                    }
+
+                    _calcInput += val;
+                    CalcDisplay.Text = _calcInput.Replace('.', ',');
+                    break;
+            }
+        }
+
+        private void Button_SaveCSV(object sender, RoutedEventArgs e)
+        {
+            var dlg = new SaveFileDialog
+            {
+                Filter = "CSV-Datei|*.csv",
+                FileName = "Haushalt_" + DateTime.Now.ToString("yyyy-MM-dd")
+            };
+
+            if (dlg.ShowDialog() != true)
+                return;
+
+            var sb = new StringBuilder();
+
+            sb.AppendLine("Typ;Bezeichnung;Betrag");
+
+            foreach (var inc in Incomes)
+                sb.AppendLine($"Einnahme;{inc.Name_income};{inc.BetragValue:F2}");
+
+            foreach (var ex in Expenses)
+                sb.AppendLine($"Ausgabe;{ex.Name};{ex.BetragValue:F2}");
+
+            double saldo =
+                Incomes.Sum(i => i.BetragValue) -
+                Expenses.Sum(ex => ex.BetragValue);
+
+            sb.AppendLine(";;");
+            sb.AppendLine($"Saldo;;{saldo:F2}");
+
+            File.WriteAllText(dlg.FileName, sb.ToString(), Encoding.UTF8);
+
+            MessageBox.Show(
+                $"CSV gespeichert:\n{dlg.FileName}",
+                "Gespeichert",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+
+        private void Button_Print(object sender, RoutedEventArgs e)
+        {
+            var dlg = new PrintDialog();
+
+            if (dlg.ShowDialog() != true)
+                return;
+
+            var doc = new FlowDocument
+            {
+                FontFamily = new FontFamily("Cascadia Code"),
+                FontSize = 12,
+                PagePadding = new Thickness(40)
+            };
+
+            doc.Blocks.Add(new Paragraph(new Run(
+                "Haushaltsplan — " + DateTime.Now.ToString("dd.MM.yyyy")))
+            {
+                FontSize = 18,
+                FontWeight = System.Windows.FontWeights.Bold,
+                Margin = new Thickness(0, 0, 0, 16)
             });
 
-        }
-
-        public class Income
-        {
-            public string Name_income { get; set; }
-            public string Betrag_income { get; set; }
-
-        }
-
-
-        private void Button_add_incomes(object sender, RoutedEventArgs e)
-        {
-
-            Incomes.Add(new Income
+            doc.Blocks.Add(new Paragraph(new Run("EINNAHMEN"))
             {
-                Name_income = "Einnahmen",
-                Betrag_income = "0€"
-
+                FontSize = 13,
+                FontWeight = System.Windows.FontWeights.Bold,
+                Margin = new Thickness(0, 0, 0, 6)
             });
 
-        }
+            var incTable = new Table();
+            incTable.Columns.Add(new TableColumn { Width = new GridLength(3, GridUnitType.Star) });
+            incTable.Columns.Add(new TableColumn { Width = new GridLength(1, GridUnitType.Star) });
 
-        private void Button_open_calc(object sender, RoutedEventArgs e)
-        {
+            var incGroup = new TableRowGroup();
 
-            Show_Input.Visibility = Visibility.Collapsed;
-            MyPlot.Visibility = Visibility.Collapsed;
-            Show_expenses.Visibility = Visibility.Collapsed;
-            Show_incomes.Visibility = Visibility.Collapsed;
-
-            bool show_calc = Show_calc.Visibility != Visibility.Visible;
-            Show_calc.Visibility = show_calc ? Visibility.Visible : Visibility.Collapsed;
-
-        }
-
-        //Funktionen für die einezlenen Buttons (Rechner)
-
-        private void Calculator_Buttons(object sender, RoutedEventArgs e)
-        {
-            Button calcButton = sender as Button;
-
-            string valueCalc = calcButton.Content.ToString();
-            Calc_Operation.Content += valueCalc;
-            double firstNumber = 0;
-            double secondNumber = 100;
-            try
+            foreach (var inc in Incomes)
             {
-                switch (valueCalc)
+                var row = new TableRow();
+
+                row.Cells.Add(new TableCell(new Paragraph(new Run(inc.Name_income))));
+
+                row.Cells.Add(new TableCell(new Paragraph(
+                    new Run(inc.BetragValue.ToString("N2", new CultureInfo("de-DE")) + " €"))
                 {
-                    case "DEL":
-                        Calc_Operation.Content = "";
-                        break;
+                    TextAlignment = TextAlignment.Right
+                }));
 
-                    case "AC":
-                        Calc_Operation.Content = "";
-
-                        if (Calc_Operation.Content.ToString() != "")
-                        {
-                            Calc_Result.Content = firstNumber + secondNumber;
-                        }
-
-                        break;
-                    case "=":
-                        Calculator_Operation();
-                        break;
-                    case "+":
-                        if (Calc_Operation.Content.ToString() != "")
-                        {
-                            Calc_Result.Content = firstNumber + secondNumber;
-                        }
-                        break;
-                }
-
-
+                incGroup.Rows.Add(row);
             }
-            catch (Exception ex)
+
+            incTable.RowGroups.Add(incGroup);
+            doc.Blocks.Add(incTable);
+
+            doc.Blocks.Add(new Paragraph(new Run("AUSGABEN"))
             {
-                MessageBox.Show("Fehler bei der Berechnung: " + ex.Message);
+                FontSize = 13,
+                FontWeight = System.Windows.FontWeights.Bold,
+                Margin = new Thickness(0, 16, 0, 6)
+            });
+
+            var expTable = new Table();
+            expTable.Columns.Add(new TableColumn { Width = new GridLength(3, GridUnitType.Star) });
+            expTable.Columns.Add(new TableColumn { Width = new GridLength(1, GridUnitType.Star) });
+
+            var expGroup = new TableRowGroup();
+
+            foreach (var ex in Expenses)
+            {
+                var row = new TableRow();
+
+                row.Cells.Add(new TableCell(new Paragraph(new Run(ex.Name))));
+
+                row.Cells.Add(new TableCell(new Paragraph(
+                    new Run(ex.BetragValue.ToString("N2", new CultureInfo("de-DE")) + " €"))
+                {
+                    TextAlignment = TextAlignment.Right
+                }));
+
+                expGroup.Rows.Add(row);
             }
-        }
-        private void Calculator_Operation()
-        {
-            /*/ if (Calc_Result.Content != null)
-             {
 
-                 string ergebnis = Calc_Result.Content.ToString();
-             }
-             else /*/
-            MessageBox.Show("Keine Eingabe vorhanden.");
-        }
+            expTable.RowGroups.Add(expGroup);
+            doc.Blocks.Add(expTable);
 
-        public void Menu_Button(object sender, RoutedEventArgs e)
-        {
-            Hide_menu.Visibility = Hide_menu.Visibility == Visibility.Visible
-            ? Visibility.Collapsed
-            : Visibility.Visible;
-            
+            double totalIncome = Incomes.Sum(i => i.BetragValue);
+            double totalExpense = Expenses.Sum(ex => ex.BetragValue);
+            double saldo = totalIncome - totalExpense;
+
+            doc.Blocks.Add(new Paragraph(new Run(
+                $"\nEinnahmen: {totalIncome.ToString("N2", new CultureInfo("de-DE"))} €   |   " +
+                $"Ausgaben: {totalExpense.ToString("N2", new CultureInfo("de-DE"))} €   |   " +
+                $"Saldo: {saldo.ToString("N2", new CultureInfo("de-DE"))} €"))
+            {
+                FontWeight = System.Windows.FontWeights.Bold,
+                Margin = new Thickness(0, 16, 0, 0)
+            });
+
+            var docPaginator = ((IDocumentPaginatorSource)doc).DocumentPaginator;
+            docPaginator.PageSize = new Size(dlg.PrintableAreaWidth, dlg.PrintableAreaHeight);
+
+            dlg.PrintDocument(docPaginator, "Haushaltsplan");
         }
     }
 }

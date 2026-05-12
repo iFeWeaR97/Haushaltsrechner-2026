@@ -3,418 +3,411 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:oxy="http://oxyplot.org/wpf"
         Title="Haushaltsplaner"
-        MaxHeight="800" MaxWidth="1500"
-        MinHeight="400" MinWidth="600"
-        Background="#444a54">
+        WindowStyle="ToolWindow"
+        AllowsTransparency="False"
+        ResizeMode="CanResize"
+        Height="800" Width="1200"
+        MinHeight="600" MinWidth="800"
+        Background="#1E2227">
 
-    <!--- Styles für die Buttons, Labels, PlotView und TextBoxen -->
     <Window.Resources>
+        <!-- Basis-Button -->
         <Style TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="Black"/>
-            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Background" Value="#2D3748"/>
+            <Setter Property="Foreground" Value="#E2E8F0"/>
+            <Setter Property="BorderBrush" Value="#4A5568"/>
+            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontFamily" Value="Cascadia Code"/>
-            <Setter Property="Padding" Value="5 5 5 5"/>
-            <Setter Property="Margin" Value="5 5 5 50"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="10 6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#4A5568"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#1A202C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
-        <Style TargetType="Label">
+
+        <!-- Akzent-Button (grün) -->
+        <Style x:Key="AccentButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#276749"/>
+            <Setter Property="BorderBrush" Value="#38A169"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#38A169"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Danger-Button (rot) -->
+        <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#742A2A"/>
+            <Setter Property="BorderBrush" Value="#FC8181"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#C53030"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Nav-Button (Seitenleiste) -->
+        <Style x:Key="NavButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#A0AEC0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="12 10"/>
+            <Setter Property="Margin" Value="4 2"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#2D3748"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
-        <Style TargetType="oxy:PlotView">
-            <Setter Property="Background" Value="Transparent"></Setter>
-        </Style>
+
+        <!-- TextBox -->
         <Style TargetType="TextBox">
-            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Background" Value="#2D3748"/>
+            <Setter Property="Foreground" Value="#E2E8F0"/>
+            <Setter Property="BorderBrush" Value="#4A5568"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="6 4"/>
+            <Setter Property="FontFamily" Value="Cascadia Code"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="CaretBrush" Value="White"/>
+        </Style>
+
+        <!-- Label -->
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="#A0AEC0"/>
+            <Setter Property="FontFamily" Value="Cascadia Code"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+
+        <!-- Karten-Border -->
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="Background" Value="#252D3A"/>
+            <Setter Property="BorderBrush" Value="#2D3748"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Margin" Value="0 0 0 12"/>
         </Style>
     </Window.Resources>
 
-    <DockPanel>
-        <!-- Menü -->
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_Datei">
-                <MenuItem Header="_Öffnen"/>
-                <MenuItem Header="_Speichern"/>
-                <Separator/>
-                <MenuItem Header="_Beenden"/>
-            </MenuItem>
-        </Menu>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-        <!-- Titel -->
-        <StackPanel Orientation="Horizontal"
-                    VerticalAlignment="Top">
-
-            <Button Width="50"
-                    HorizontalAlignment="Left"
-                    Background="#444a54"
-                    Click="Menu_Button"
-                    Height="40">
-                <Image Source="/pictures/menu.png"
-                       Stretch="Uniform"/>
-            </Button>
-        </StackPanel>
-
-        <ScrollViewer VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Auto">
-
-            <!-- Hauptbereich -->
-            <Grid ShowGridLines="True">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- Buttons (Panel)-->
-                <StackPanel Orientation="Vertical"
-                            Grid.Row="0"
-                            Visibility="Collapsed"
-                            x:Name="Hide_menu">
-                    <StackPanel VerticalAlignment="Top"
-                                HorizontalAlignment="Left"
-                                Orientation="Vertical"
-                                Background="#444a54"
-                                Height="500">
-
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/pictures/finance.png"
-                                   Stretch="UniformToFill"
-                                   Width="50"
-                                   Margin="5"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Center"/>
-
-                            <Button Margin="10"
-                                    Padding="10 10 10 10"
-                                    Content="Haushaltsplaner"
-                                    FontSize="20"
-                                    Click="Button_open_finance"
-                                    Width="210"/>
-
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/pictures/calculator.png"
-                                   Stretch="UniformToFill"
-                                   Width="50"
-                                   Margin="5"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Center"/>
-                            <Button Margin="10 10 10 10"
-                                    Padding="10"
-                                    Content="Rechner"
-                                    Click="Button_open_calc"
-                                    FontSize="20"
-                                    Width="210"/>
-                        </StackPanel>
-
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/pictures/diagram.png"
-                                   Stretch="UniformToFill"
-                                   Width="50"
-                                   Margin="5"
-                                   VerticalAlignment="Bottom"
-                                   HorizontalAlignment="Left"/>
-                            <Button Margin="10 10 10 10"
-                                    Padding="10"
-                                    Content="Diagramm"
-                                    FontSize="20"
-                                    Click="Button_open_diagramm"
-                                    Width="210"/>
-                        </StackPanel>
-                    </StackPanel>
-                </StackPanel>
-                <StackPanel Grid.Row="0"
-                            Grid.Column="2"
-                            HorizontalAlignment="Center"
-                            Orientation="Horizontal">
-
-                    <!-- Ausgaben hinzufügen -->
-                    <StackPanel x:Name="Show_expenses"
-                                Orientation="Vertical"
-                                Visibility="Collapsed">
-                        <Button Content="Ausgabe hinzufügen"
-                                Width="250"
-                                Height="40"
-                                HorizontalAlignment="Left"
-                                Margin="5 0 5 20"
-                                FontFamily="Arial Black"
-                                FontSize="20"
-                                Click="Button_add_expenses"/>
-
-                        <!-- Ausgaben hinzufügen per Knopfdruck  -->
-                        <ItemsControl ItemsSource="{Binding Expenses}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBox Text="{Binding Name}"
-                                                 Background="AntiqueWhite"
-                                                 Foreground="DarkRed"
-                                                 FontFamily="Arial"
-                                                 FontSize="24"
-                                                 Margin="2 2 2 2"
-                                                 BorderBrush="Black"
-                                                 BorderThickness="3"/>
-                                        <TextBox Text="{Binding Betrag}"
-                                                 Background="AntiqueWhite"
-                                                 Foreground="Red"
-                                                 FontFamily="Arial"
-                                                 FontSize="24"
-                                                 Margin="2 2 2 2"
-                                                 BorderBrush="Black"
-                                                 BorderThickness="3"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-
-                    <!-- Einnahmen hinzufügen -->
-                    <StackPanel x:Name="Show_incomes"
-                                Orientation="Vertical"
-                                Visibility="Collapsed">
-                        <Button Content="Einnahmen hinzufügen"
-                                Width="250"
-                                Height="40"
-                                HorizontalAlignment="Left"
-                                Margin="5 0 5 20"
-                                FontFamily="Arial Black"
-                                FontSize="20"
-                                Click="Button_add_incomes"/>
-
-                        <!-- Einnahmenhinzufügen per Knopfdruck  -->
-                        <ItemsControl ItemsSource="{Binding Incomes}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBox Text="{Binding Name_income}"
-                                                 Background="AntiqueWhite"
-                                                 Foreground="YellowGreen"
-                                                 FontFamily="Arial"
-                                                 FontSize="24"
-                                                 Margin="2 2 2 2"
-                                                 BorderBrush="Black"
-                                                 BorderThickness="3"/>
-                                        <TextBox Text="{Binding Betrag_income}"
-                                                 Background="AntiqueWhite"
-                                                 Foreground="Green"
-                                                 FontFamily="Arial"
-                                                 FontSize="24"
-                                                 Margin="2 2 2 2"
-                                                 BorderBrush="Black"
-                                                 BorderThickness="3"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
+        <!-- ===== SEITENLEISTE ===== -->
+        <Border Grid.Column="0" Background="#161B22" BorderBrush="#2D3748" BorderThickness="0 0 1 0">
+            <DockPanel>
+                <!-- Logo / Titel -->
+                <StackPanel DockPanel.Dock="Top" Margin="16 20 16 24">
+                    <TextBlock  FontSize="28" HorizontalAlignment="Center">
+                        <Image Source="pictures/finance.png" Height="80" Width="80"/>
+                    </TextBlock>
+                    <TextBlock Text="Haushaltsplaner" FontSize="15" FontWeight="Bold"
+                               Foreground="White" FontFamily="Cascadia Code"
+                               HorizontalAlignment="Center" Margin="0 6 0 0"/>
                 </StackPanel>
 
-                <!-- Eingabe für Diagramm -->
-                <StackPanel Grid.Row="0"
-                            Grid.Column="4"
-                            Orientation="Vertical"
-                            Visibility="Collapsed"
-                            x:Name="Show_Input"
-                            HorizontalAlignment="Center">
-                    <Label Content="Ausgaben:"
-                           FontSize="23"
-                           Background="#444a54"
-                           Opacity="0.8"/>
-
-                    <!--- Eingabe für Diagramm per Knopfdruck (Später löschen) -->
-                    <StackPanel Orientation="Vertical"
-                                Width="Auto"
-                                Height="Auto">
-                        <TextBox ToolTip="Bitte Betrag eingeben"
-                                 x:Name="userInputAusgaben"
-                                 BorderBrush="Black"
-                                 BorderThickness="2"
-                                 Margin="2 5 2 5"
-                                 Opacity="0.9"
-                                 Background="#444a54"/>
-                        <Button Content="Bestätigen"
-                                Click="Button_choose_date"
-                                BorderBrush="Black"
-                                BorderThickness="2"
-                                Opacity="0.8"
-                                Background="#444a54"/>
-                        <Button Content="Löschen"
-                                Click="Button_delete_diagramm"
-                                BorderBrush="Black"
-                                BorderThickness="2"
-                                Opacity="0.8"
-                                Background="#444a54"/>
-                    </StackPanel>
+                <!-- Navigation -->
+                <StackPanel DockPanel.Dock="Top" Margin="8 0">
+                    <Button Content="📊  Übersicht" Style="{StaticResource NavButton}"
+                            x:Name="NavOverview" Click="Nav_Overview"/>
+                    <Button Content="💸  Ausgaben" Style="{StaticResource NavButton}"
+                            x:Name="NavExpenses" Click="Nav_Expenses"/>
+                    <Button Content="💵  Einnahmen" Style="{StaticResource NavButton}"
+                            x:Name="NavIncomes" Click="Nav_Incomes"/>
+                    <Button Content="📈  Diagramm" Style="{StaticResource NavButton}"
+                            x:Name="NavChart" Click="Nav_Chart"/>
+                    <Button Content="🧮  Rechner" Style="{StaticResource NavButton}"
+                            x:Name="NavCalc" Click="Nav_Calc"/>
                 </StackPanel>
 
-                <!-- Diagramm -->
-                <oxy:PlotView Grid.Row="0"
-                              Grid.Column="3"
-                              x:Name="MyPlot"
-                              Model="{Binding PlotModel}"
-                              Visibility="Collapsed"
-                              MinHeight="500"
-                              MinWidth="500"/>
+                <!-- Export-Buttons unten -->
+                <StackPanel DockPanel.Dock="Bottom" Margin="12 0 12 16">
+                    <Separator Background="#2D3748" Margin="0 0 0 12"/>
+                    <TextBlock Text="EXPORT" Foreground="#4A5568" FontSize="10"
+                               FontFamily="Cascadia Code" Margin="4 0 0 8"/>
+                    <Button Content="🖨️  Drucken" Style="{StaticResource NavButton}"
+                            Click="Button_Print" Margin="4 2"/>
+                    <Button Content="💾  CSV speichern" Style="{StaticResource NavButton}"
+                            Click="Button_SaveCSV" Margin="4 2"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
 
-                <!-- Rechner -->
-                <Border Background="Transparent"
-                        BorderBrush="Black"
-                        BorderThickness="3"
-                        Grid.Row="0"
-                        Grid.Column="2"
-                        x:Name="Show_calc"
-                        Visibility="Collapsed" Grid.ColumnSpan="4">
-                    <StackPanel
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Background="SlateGray">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="100"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="400"/>
-                            </Grid.ColumnDefinitions>
+        <!-- ===== HAUPTBEREICH ===== -->
+        <Grid Grid.Column="1">
 
-                            <!-- Ergebnisanzeige -->
-                            <Label Content="Result"
-                                   FontSize="40"
-                                   HorizontalAlignment="Center"
-                                   HorizontalContentAlignment="Center"
-                                   VerticalContentAlignment="Center"
-                                   BorderBrush="Black"
-                                   Background="LightSlateGray"
-                                   Foreground="GhostWhite"
-                                   BorderThickness="3"
-                                   x:Name="Calc_Operation"
-                                   Height="100"
-                                   Width="400"/>
+            <!-- ── ÜBERSICHT ── -->
+            <ScrollViewer x:Name="Page_Overview" VerticalScrollBarVisibility="Auto" Visibility="Visible">
+                <StackPanel Margin="24">
+                    <TextBlock Text="Übersicht" FontSize="24" FontWeight="Bold"
+                               Foreground="White" FontFamily="Cascadia Code" Margin="0 0 0 20"/>
 
-                            <Label Height="50"
-                                   Width="100"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Bottom"
-                                   VerticalContentAlignment="Center"
-                                   HorizontalContentAlignment="Center"
-                                   Content="=Ergebnis"
-                                   FontFamily="Agency FB"
-                                   FontSize="20"
-                                   Foreground="Black"
-                                   x:Name="Calc_Result"
-                                   Opacity="0.5"/>
+                    <!-- KPI-Karten -->
+                    <UniformGrid Columns="3" Margin="0 0 0 16">
+                        <!-- Einnahmen -->
+                        <Border Style="{StaticResource Card}" Margin="0 0 8 0">
+                            <StackPanel>
+                                <TextBlock Text="Einnahmen gesamt" Foreground="#68D391"
+                                           FontFamily="Cascadia Code" FontSize="12"/>
+                                <TextBlock x:Name="LabelTotalIncome" Text="0,00 €"
+                                           FontSize="28" FontWeight="Bold" Foreground="#68D391"
+                                           FontFamily="Cascadia Code" Margin="0 8 0 0"/>
+                            </StackPanel>
+                        </Border>
+                        <!-- Ausgaben -->
+                        <Border Style="{StaticResource Card}" Margin="4 0">
+                            <StackPanel>
+                                <TextBlock Text="Ausgaben gesamt" Foreground="#FC8181"
+                                           FontFamily="Cascadia Code" FontSize="12"/>
+                                <TextBlock x:Name="LabelTotalExpense" Text="0,00 €"
+                                           FontSize="28" FontWeight="Bold" Foreground="#FC8181"
+                                           FontFamily="Cascadia Code" Margin="0 8 0 0"/>
+                            </StackPanel>
+                        </Border>
+                        <!-- Saldo -->
+                        <Border Style="{StaticResource Card}" Margin="8 0 0 0">
+                            <StackPanel>
+                                <TextBlock Text="Saldo" Foreground="#63B3ED"
+                                           FontFamily="Cascadia Code" FontSize="12"/>
+                                <TextBlock x:Name="LabelSaldo" Text="0,00 €"
+                                           FontSize="28" FontWeight="Bold" Foreground="#63B3ED"
+                                           FontFamily="Cascadia Code" Margin="0 8 0 0"/>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
 
-                        </Grid>
-
-                        <!--- Erste Reihe -->
-                        <StackPanel Orientation="Horizontal"
-                                    Grid.Row="2"
-                                    Grid.ColumnSpan="1"
-                                    HorizontalAlignment="Center">
-
-                            <Button Content="0"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
-                            <Button Content="1"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
-                            <Button Content="2"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
-                            <Button Content="3"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
-                            <Button Content="4"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
+                    <!-- Mini-Diagramm auf Übersicht -->
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="Einnahmen vs. Ausgaben" Foreground="White"
+                                       FontFamily="Cascadia Code" FontSize="14" FontWeight="Bold"
+                                       Margin="0 0 0 12"/>
+                            <oxy:PlotView x:Name="OverviewPlot"
+                                          Height="280"
+                                          Background="Transparent"
+                                          Model="{Binding OverviewModel}"/>
                         </StackPanel>
-                        <!--- Zweite Reihe -->
-                        <StackPanel Orientation="Horizontal"
-                                    Grid.Row="3"
-                                    Grid.ColumnSpan="1"
-                                    HorizontalAlignment="Center">
-                            <Button Content="5"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
-                            <Button Content="6"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
-                            <Button Content="7"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
-                            <Button Content="8"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
-                            <Button Content="9"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
 
-                        </StackPanel>
+            <!-- ── AUSGABEN ── -->
+            <ScrollViewer x:Name="Page_Expenses" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                <StackPanel Margin="24">
+                    <TextBlock Text="Ausgaben" FontSize="24" FontWeight="Bold"
+                               Foreground="White" FontFamily="Cascadia Code" Margin="0 0 0 20"/>
 
-                        <!--- Dritte Reihe -->
-                        <StackPanel Orientation="Horizontal"
-                                    Grid.Row="4"
-                                    Grid.ColumnSpan="1"
-                                    HorizontalAlignment="Center">
-                            <Button Content="+"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
-                            <Button Content="-"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
-                            <Button Content="x"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
-                            <Button Content=":"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
-                            <Button Content="AC"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
-                        </StackPanel>
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <!-- Kopfzeile -->
+                            <Grid Margin="0 0 0 8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition Width="80"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Bezeichnung" Foreground="#4A5568"
+                                           FontFamily="Cascadia Code" FontSize="11"/>
+                                <TextBlock Grid.Column="1" Text="Betrag (€)" Foreground="#4A5568"
+                                           FontFamily="Cascadia Code" FontSize="11"/>
+                                <TextBlock Grid.Column="2" Text="Aktion" Foreground="#4A5568"
+                                           FontFamily="Cascadia Code" FontSize="11"/>
+                            </Grid>
 
-                        <!--- Operationen Reihe -->
-                        <StackPanel Orientation="Horizontal"
-                                    Grid.Row="5"
-                                    Grid.ColumnSpan="1"
-                                    HorizontalAlignment="Center">
-                            <Button Content="DEL"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
-                            <Button Content="="
-                                    FontSize="50"
-                                    HorizontalContentAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Width="80"
-                                    Height="80"
-                                    Click="Calculator_Buttons"/>
+                            <ItemsControl x:Name="ExpenseList" ItemsSource="{Binding Expenses}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0 3">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="160"/>
+                                                <ColumnDefinition Width="80"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Grid.Column="0" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                                     Margin="0 0 6 0"/>
+                                            <TextBox Grid.Column="1" Text="{Binding Betrag, UpdateSourceTrigger=PropertyChanged}"
+                                                     Margin="0 0 6 0"
+                                                     LostFocus="Recalculate"/>
+                                            <Button Grid.Column="2" Content="✕"
+                                                    Style="{StaticResource DangerButton}"
+                                                    Tag="{Binding}"
+                                                    Click="Button_DeleteExpense"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <Button Content="+ Ausgabe hinzufügen"
+                                    Style="{StaticResource AccentButton}"
+                                    HorizontalAlignment="Left"
+                                    Margin="0 12 0 0"
+                                    Click="Button_add_expenses"/>
                         </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- ── EINNAHMEN ── -->
+            <ScrollViewer x:Name="Page_Incomes" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                <StackPanel Margin="24">
+                    <TextBlock Text="Einnahmen" FontSize="24" FontWeight="Bold"
+                               Foreground="White" FontFamily="Cascadia Code" Margin="0 0 0 20"/>
+
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <Grid Margin="0 0 0 8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition Width="80"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Bezeichnung" Foreground="#4A5568"
+                                           FontFamily="Cascadia Code" FontSize="11"/>
+                                <TextBlock Grid.Column="1" Text="Betrag (€)" Foreground="#4A5568"
+                                           FontFamily="Cascadia Code" FontSize="11"/>
+                                <TextBlock Grid.Column="2" Text="Aktion" Foreground="#4A5568"
+                                           FontFamily="Cascadia Code" FontSize="11"/>
+                            </Grid>
+
+                            <ItemsControl x:Name="IncomeList" ItemsSource="{Binding Incomes}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0 3">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="160"/>
+                                                <ColumnDefinition Width="80"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Grid.Column="0" Text="{Binding Name_income, UpdateSourceTrigger=PropertyChanged}"
+                                                     Margin="0 0 6 0"/>
+                                            <TextBox Grid.Column="1" Text="{Binding Betrag_income, UpdateSourceTrigger=PropertyChanged}"
+                                                     Margin="0 0 6 0"
+                                                     LostFocus="Recalculate"/>
+                                            <Button Grid.Column="2" Content="✕"
+                                                    Style="{StaticResource DangerButton}"
+                                                    Tag="{Binding}"
+                                                    Click="Button_DeleteIncome"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <Button Content="+ Einnahme hinzufügen"
+                                    Style="{StaticResource AccentButton}"
+                                    HorizontalAlignment="Left"
+                                    Margin="0 12 0 0"
+                                    Click="Button_add_incomes"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- ── DIAGRAMM ── -->
+            <Grid x:Name="Page_Chart" Visibility="Collapsed">
+                <StackPanel Margin="24">
+                    <TextBlock Text="Diagramm" FontSize="24" FontWeight="Bold"
+                               Foreground="White" FontFamily="Cascadia Code" Margin="0 0 0 20"/>
+
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0 0 0 12">
+                                <Button Content="🔄 Aktualisieren" Click="Button_RefreshChart"
+                                        Style="{StaticResource AccentButton}" Margin="0 0 8 0"/>
+                                <Button Content="🗑️ Zurücksetzen" Click="Button_delete_diagramm"
+                                        Style="{StaticResource DangerButton}"/>
+                            </StackPanel>
+                            <oxy:PlotView x:Name="MainPlot"
+                                          Height="450"
+                                          Background="Transparent"
+                                          Model="{Binding PlotModel}"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <!-- ── RECHNER ── -->
+            <Grid x:Name="Page_Calc" Visibility="Collapsed">
+                <Border Background="#252D3A" CornerRadius="8" Margin="24"
+                        BorderBrush="#2D3748" BorderThickness="1"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Padding="24" MinWidth="380">
+                    <StackPanel>
+                        <TextBlock Text="Rechner" FontSize="20" FontWeight="Bold"
+                                   Foreground="White" FontFamily="Cascadia Code"
+                                   HorizontalAlignment="Center" Margin="0 0 0 16"/>
+
+                        <!-- Display -->
+                        <Border Background="#1A202C" CornerRadius="6" Padding="12 8" Margin="0 0 0 4">
+                            <TextBlock x:Name="CalcDisplay" Text="0"
+                                       FontSize="32" FontWeight="Bold"
+                                       Foreground="White" FontFamily="Cascadia Code"
+                                       HorizontalAlignment="Right"/>
+                        </Border>
+                        <TextBlock x:Name="CalcSubDisplay" Text=""
+                                   Foreground="#4A5568" FontFamily="Cascadia Code"
+                                   FontSize="12" HorizontalAlignment="Right"
+                                   Margin="0 0 4 12"/>
+
+                        <!-- Tasten -->
+                        <UniformGrid Columns="4" Rows="5">
+                            <!-- Reihe 1 -->
+                            <Button Content="AC" Click="Calc_Click" Background="#742A2A" Foreground="White" Margin="3" Height="60"/>
+                            <Button Content="±" Click="Calc_Click" Background="#4A5568" Foreground="White" Margin="3" Height="60"/>
+                            <Button Content="%" Click="Calc_Click" Background="#4A5568" Foreground="White" Margin="3" Height="60"/>
+                            <Button Content="÷" Click="Calc_Click" Background="#276749" Foreground="White" Margin="3" Height="60" FontSize="20"/>
+                            <!-- Reihe 2 -->
+                            <Button Content="7" Click="Calc_Click" Background="#2D3748" Foreground="White" Margin="3" Height="60"/>
+                            <Button Content="8" Click="Calc_Click" Background="#2D3748" Foreground="White" Margin="3" Height="60"/>
+                            <Button Content="9" Click="Calc_Click" Background="#2D3748" Foreground="White" Margin="3" Height="60"/>
+                            <Button Content="×" Click="Calc_Click" Background="#276749" Foreground="White" Margin="3" Height="60" FontSize="18"/>
+                            <!-- Reihe 3 -->
+                            <Button Content="4" Click="Calc_Click" Background="#2D3748" Foreground="White" Margin="3" Height="60"/>
+                            <Button Content="5" Click="Calc_Click" Background="#2D3748" Foreground="White" Margin="3" Height="60"/>
+                            <Button Content="6" Click="Calc_Click" Background="#2D3748" Foreground="White" Margin="3" Height="60"/>
+                            <Button Content="-" Click="Calc_Click" Background="#276749" Foreground="White" Margin="3" Height="60" FontSize="20"/>
+                            <!-- Reihe 4 -->
+                            <Button Content="1" Click="Calc_Click" Background="#2D3748" Foreground="White" Margin="3" Height="60"/>
+                            <Button Content="2" Click="Calc_Click" Background="#2D3748" Foreground="White" Margin="3" Height="60"/>
+                            <Button Content="3" Click="Calc_Click" Background="#2D3748" Foreground="White" Margin="3" Height="60"/>
+                            <Button Content="+" Click="Calc_Click" Background="#276749" Foreground="White" Margin="3" Height="60" FontSize="20"/>
+                            <!-- Reihe 5 -->
+                            <Button Content="DEL" Click="Calc_Click" Background="#4A5568" Foreground="White" Margin="3" Height="60" FontSize="11"/>
+                            <Button Content="0" Click="Calc_Click" Background="#2D3748" Foreground="White" Margin="3" Height="60"/>
+                            <Button Content="," Click="Calc_Click" Background="#2D3748" Foreground="White" Margin="3" Height="60"/>
+                            <Button Content="=" Click="Calc_Click" Background="#276749" Foreground="White" Margin="3" Height="60" FontSize="22"/>
+                        </UniformGrid>
                     </StackPanel>
                 </Border>
             </Grid>
-        </ScrollViewer>
-    </DockPanel>
+
+        </Grid>
+    </Grid>
 </Window>

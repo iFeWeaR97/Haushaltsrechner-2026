@@ -1,120 +1,161 @@
-# 🏠 Haushaltsrechner – C# WPF Anwendung
+# 🏠 Haushaltsplaner – C# WPF Anwendung
 
-Ein moderner Haushaltsrechner zur übersichtlichen Verwaltung von Einnahmen und Ausgaben.
-Die Anwendung kombiniert Rechnen, Visualisieren, Planen und Speichern in einer intuitiven Benutzeroberfläche.
+Ein moderner Haushaltsplaner zur Verwaltung von Einnahmen und Ausgaben mit grafischer Auswertung, integriertem Rechner sowie Export- und Druckfunktionen.
+
+Die Anwendung wurde mit **C#**, **WPF** und **OxyPlot** entwickelt und dient als Lern- und Entwicklungsprojekt für strukturierte Desktop-Programmierung.
 
 ---
 
 ## ✨ Projektübersicht
 
-Der Haushaltsrechner unterstützt Nutzer dabei, ihre finanziellen Ausgaben und Einnahmen über die Zeit zu verfolgen,
-zu analysieren und zukünftig zu planen. Besonderer Fokus liegt auf einer anschaulichen grafischen Darstellung
-sowie einer einfachen Bedienung.
+Der Haushaltsplaner unterstützt Nutzer dabei, ihre persönlichen Finanzen übersichtlich zu erfassen und auszuwerten.
+
+Einnahmen und Ausgaben können manuell eingegeben, berechnet und grafisch dargestellt werden. Zusätzlich bietet die Anwendung einen integrierten Rechner sowie einfache Exportmöglichkeiten.
+
+Der Fokus liegt auf einer modernen Benutzeroberfläche, verständlicher Bedienung und einer erweiterbaren Programmstruktur.
 
 ---
 
 ## 🎯 Ziele des Projekts
 
-- Überblick über persönliche Finanzen schaffen
-- Ausgaben und Einnahmen zeitlich nachvollziehbar darstellen
-- Finanzplanung vereinfachen
-- Daten dauerhaft speichern und wieder laden
-- Saubere und erweiterbare C#-Architektur
+- Überblick über Einnahmen, Ausgaben und Saldo schaffen
+- Finanzdaten übersichtlich erfassen
+- Einnahmen und Ausgaben grafisch darstellen
+- Einen einfachen Haushaltsrechner integrieren
+- Daten als CSV-Datei speichern
+- Haushaltsübersicht drucken
+- Saubere und erweiterbare C#-Architektur aufbauen
 
 ---
 
 ## 🧩 Hauptfunktionen
 
-### 💰 Einnahmen- & Ausgabenrechner
-- Manuelle Eingabe von Beträgen
-- Unterstützung des deutschen Zahlenformats
-- Kategorisierung (z. B. Miete, Lebensmittel, Freizeit)
+### 💰 Einnahmenverwaltung
+
+- Hinzufügen neuer Einnahmen
+- Bearbeiten von Bezeichnung und Betrag
+- Löschen einzelner Einträge
+- Automatische Berechnung der Gesamteinnahmen
+- Unterstützung des deutschen Zahlenformats mit Komma
 
 ---
 
-### 📊 Diagramme & Visualisierung
-- Zeitverlauf-Diagramme (z. B. Ausgaben pro Tag, Woche oder Monat)
-- Dynamische Aktualisierung der Kurven
-- Klare Darstellung von Trends und Entwicklungen
-- Umsetzung mit OxyPlot
+### 💸 Ausgabenverwaltung
+
+- Hinzufügen neuer Ausgaben
+- Bearbeiten von Bezeichnung und Betrag
+- Löschen einzelner Einträge
+- Automatische Berechnung der Gesamtausgaben
+- Übersichtliche Eingabemaske
 
 ---
 
-### 🗓️ Finanz- & Haushaltsplaner
-- Planung zukünftiger Ausgaben
-- Monats- und Budgetübersicht
-- Vergleich geplant vs. tatsächlich
+### 📊 Übersicht
+
+Die Startseite zeigt die wichtigsten Kennzahlen:
+
+- Gesamteinnahmen
+- Gesamtausgaben
+- Aktueller Saldo
+
+Der Saldo wird farblich hervorgehoben, damit positive und negative Werte schnell erkennbar sind.
 
 ---
 
-### 💾 Speicherfunktionen
-- Lokales Speichern aller Haushaltsdaten
-- Laden bereits gespeicherter Daten
-- Unterstützung für Formate wie JSON oder CSV
+### 📈 Diagramme mit OxyPlot
+
+Die Anwendung verwendet **OxyPlot** zur grafischen Darstellung der Haushaltsdaten.
+
+Aktuell umgesetzt:
+
+- Balkendiagramm für Einnahmen, Ausgaben und Saldo
+- Separate Diagrammansicht
+- Aktualisieren des Diagramms per Button
+- Zurücksetzen des Diagramms
+- Dunkles Design passend zur Benutzeroberfläche
+
+---
+
+### 🧮 Integrierter Rechner
+
+Die Anwendung enthält einen einfachen Taschenrechner mit folgenden Funktionen:
+
+- Addition
+- Subtraktion
+- Multiplikation
+- Division
+- Prozentrechnung
+- Vorzeichenwechsel
+- Löschen einzelner Eingaben
+- Zurücksetzen mit AC
+
+---
+
+### 💾 CSV-Export
+
+Die eingegebenen Einnahmen und Ausgaben können als CSV-Datei gespeichert werden.
+
+Exportierte Daten:
+
+- Typ des Eintrags
+- Bezeichnung
+- Betrag
+- Gesamtsaldo
+
+---
+
+### 🖨️ Druckfunktion
+
+Die Anwendung kann eine einfache Haushaltsübersicht drucken.
+
+Gedruckt werden:
+
+- Einnahmenliste
+- Ausgabenliste
+- Gesamteinnahmen
+- Gesamtausgaben
+- Saldo
 
 ---
 
 ## 🛠️ Verwendete Technologien
 
 - C#
-- WPF (Windows Presentation Foundation)
+- WPF / XAML
+- .NET Desktop
 - OxyPlot
-- .NET Desktop Application
+- ObservableCollection
+- Data Binding
+- CSV-Dateiverarbeitung
+- WPF PrintDialog / FlowDocument
 
 ---
 
 ## 🖥️ Benutzeroberfläche
 
-- Übersichtliche Eingabemasken
-- Diagrammansicht ein- und ausblendbar
-- Intuitive Navigation
-- Fokus auf Klarheit und Nutzerfreundlichkeit
+Die Benutzeroberfläche besitzt ein modernes dunkles Design mit einer festen Seitenleiste.
+
+Bereiche der Anwendung:
+
+- Übersicht
+- Ausgaben
+- Einnahmen
+- Diagramm
+- Rechner
+- Drucken
+- CSV speichern
+
+Das Layout ist klar strukturiert und für eine einfache Bedienung ausgelegt.
 
 ---
 
-## 📂 Projektstruktur (Beispiel)
+## 📂 Aktuelle Projektstruktur
 
+```text
 WPF_Test/
 │
 ├── MainWindow.xaml
 ├── MainWindow.xaml.cs
-├── Models/
-│   └── Ausgabe.cs
-├── Services/
-│   └── SpeicherService.cs
-├── Views/
-│   └── DiagrammView.xaml
+├── pictures/
+│   └── finance.png
 └── README.md
-
----
-
-## 🚀 Geplante Erweiterungen
-
-- Automatische Monatsauswertung
-- Weitere Diagrammtypen (Balken, Kreisdiagramm)
-- Statistiken wie Summe, Mittelwert und Maximum
-- Dark Mode
-- Mehrsprachigkeit
-- Optionale Cloud-Speicherung
-
----
-
-## 🎓 Lernziele
-
-- Strukturierte C#-Programmierung
-- Arbeiten mit WPF und Datenbindung
-- Datenvisualisierung mit Diagrammen
-- Umgang mit Zeitreihen und Dateien
-- Aufbau einer erweiterbaren Softwarearchitektur
-
----
-
-## 📌 Projektstatus
-
-In Entwicklung – Grundfunktionen sind vorhanden, weitere Features folgen.
-
----
-
-## 📜 Lizenz
-
-Privates Lern- und Entwicklungsprojekt.
