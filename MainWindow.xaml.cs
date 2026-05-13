@@ -561,6 +561,91 @@ namespace WPF_Test
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
         }
+        private void Button_LoadCSV(object sender, RoutedEventArgs e)
+        {
+            var dlg = new OpenFileDialog
+            {
+                Filter = "CSV-Datei|*.csv|Alle Dateien|*.*",
+                Title = "CSV-Datei laden"
+            };
+
+            if (dlg.ShowDialog() != true)
+                return;
+
+            try
+            {
+                string[] lines = File.ReadAllLines(dlg.FileName, Encoding.UTF8);
+
+                Incomes.Clear();
+                Expenses.Clear();
+
+                foreach (string line in lines.Skip(1)) // Überschrift überspringen
+                {
+                    if (string.IsNullOrWhiteSpace(line))
+                        continue;
+
+                    string[] parts = line.Split(';');
+
+                    if (parts.Length < 3)
+                        continue;
+
+                    string typ = parts[0].Trim();
+                    string bezeichnung = parts[1].Trim();
+                    string betragText = parts[2].Trim();
+
+                    if (typ == "Saldo")
+                        continue;
+
+                    if (string.IsNullOrWhiteSpace(typ))
+                        continue;
+
+                    if (!double.TryParse(
+                            betragText.Replace(',', '.'),
+                            NumberStyles.Any,
+                            CultureInfo.InvariantCulture,
+                            out double betrag))
+                    {
+                        continue;
+                    }
+
+                    string betragAlsText = betrag.ToString(CultureInfo.InvariantCulture);
+
+                    if (typ == "Einnahme")
+                    {
+                        Incomes.Add(new Income
+                        {
+                            Name_income = bezeichnung,
+                            Betrag_income = betragAlsText
+                        });
+                    }
+                    else if (typ == "Ausgabe")
+                    {
+                        Expenses.Add(new Expense
+                        {
+                            Name = bezeichnung,
+                            Betrag = betragAlsText
+                        });
+                    }
+                }
+
+                Recalculate();
+                RefreshMainChart();
+
+                MessageBox.Show(
+                    $"CSV geladen:\n{dlg.FileName}",
+                    "Geladen",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Fehler beim Laden der CSV-Datei:\n{ex.Message}",
+                    "Fehler",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
 
         private void Button_Print(object sender, RoutedEventArgs e)
         {
